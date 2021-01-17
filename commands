@@ -10,6 +10,12 @@ ipconfig /renew
 # first linux
 pwd  
 whoami
+touch
+mkdir
+cp
+mv
+rm
+rmdir
 
 
 # first windows
