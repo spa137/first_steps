@@ -1,0 +1,16 @@
+# network linux
+ip a
+arp-scan 192.168.88.0/24               https://www.youtube.com/watch?v=SGJDs_f213Y
+nmap 192.168.88.0/24                   https://www.youtube.com/watch?v=pGN97hb08lU
+
+# network windows
+ipconfig
+ipconfig /renew
+
+# first linux
+pwd
+woami
+
+
+# first windows
+woami
