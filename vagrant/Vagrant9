@@ -1,16 +1,16 @@
-# vagrant snapshot list
-# vagrant snapshot restore
-# vagrant snapshot save
 Vagrant.configure("2") do |config|
+  config.vm.network "private_network", type: "dhcp",  virtualbox__intnet: true
+
+
   config.vm.provision "shell",
-    inline: "free -h"
+    inline: "ip a"
   config.vm.box = "ubuntu/trusty32"
   config.vm.box_check_update = false
   config.vm.hostname = "u1"
   config.vm.define "u1"
   config.vm.provider "virtualbox" do |vb|
      vb.gui = false
-     vb.memory = "1024"
+     vb.memory = "512"
      vb.cpus = 1
   end
 end

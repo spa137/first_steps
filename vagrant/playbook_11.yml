@@ -1,0 +1,7 @@
+---
+- hosts: all
+  tasks:
+  - name: Echo String to a tmp file
+    shell: echo  "start">> /fileshost/dates.txt
+  - name: Echo the Date to a host file
+    shell: echo  "`date`">> /fileshost/dates.txt
