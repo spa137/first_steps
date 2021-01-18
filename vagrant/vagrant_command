@@ -29,6 +29,12 @@ vagrant box list
 cписок доступных машин
 
 
+vagrant reload
+перезагрузить виртуалку
 
 
+vagrant global-status 
+все виртуальные машины в системе
 
+vagrant global-status --prune
+очистка информации
