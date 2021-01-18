@@ -38,3 +38,15 @@ vagrant global-status
 
 vagrant global-status --prune
 очистка информации
+
+
+vagrant box remove имя_машины
+удалить машину, которая есть в списке  vagrant box list
+
+
+vagrant snapshot save
+vagrant snapshot list
+vagrant snapshot restore
+снапшоты
+
+
