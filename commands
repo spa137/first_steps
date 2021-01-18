@@ -1,3 +1,7 @@
+# spa it базовый семестр
+# https://www.youtube.com/channel/UCYNlXkl8atYZcjIbOrLjpxQ
+
+
 # network linux
 ip a
 arp-scan 192.168.88.0/24               https://www.youtube.com/watch?v=SGJDs_f213Y
@@ -16,6 +20,8 @@ ssh имя_пользователя@адрес
 
 
 # first linux
+sudo apt update
+sodo apt upgrade
 pwd  
 whoami
 touch
