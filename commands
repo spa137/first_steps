@@ -1,27 +1,26 @@
-# spa it базовый семестр
+# SPA IT - Базовый семестр
 # https://www.youtube.com/channel/UCYNlXkl8atYZcjIbOrLjpxQ
 
-
-# network linux
+# Linux: Network
 ip a
-arp-scan 192.168.88.0/24               https://www.youtube.com/watch?v=SGJDs_f213Y
-nmap 192.168.88.0/24                   https://www.youtube.com/watch?v=pGN97hb08lU
+arp-scan 192.168.88.0/24   # https://www.youtube.com/watch?v=SGJDs_f213Y
+nmap 192.168.88.0/24       # https://www.youtube.com/watch?v=pGN97hb08lU
 sudo apt install ssh
 ssh имя_пользователя@адрес
 sudo su / exit
 nano
 
-
-# network windows
+# Windows: Network
 ipconfig
 ipconfig /renew
-ssh имя_пользователя@адрес                             
+ssh имя_пользователя@адрес
 
-
-
-# first linux
+# Linux: First
+# can be simplified: sudo apt update && sudo apt upgrade && sudo apt-get update && sudo apt-get upgrade
 sudo apt update
-sodo apt upgrade
+sudo apt upgrade
+sudo apt-get update
+sudo apt-get upgrade
 pwd  
 whoami
 touch
@@ -31,9 +30,8 @@ mv
 rm
 rmdir
 cd ..
-cd имя каталога
+cd имя_каталога
 
-# first windows
+# Windows: First
 whoami
 whoami /groups 
-
