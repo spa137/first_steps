@@ -1,0 +1,24 @@
+[docker]
+
+docker run -d -p 8080:80 nginx
+запуск с пробросом порта 80 на 8080
+
+docker ps
+список контейнеров
+
+docker images
+список образов
+
+
+
+docker exec -it идентификатор  sh запустить sh в контейнере
+exit
+
+
+docker commit ID_контейнера имя
+
+docker stop my_container -t 20
+
+docker start id_контейнера
+
+
