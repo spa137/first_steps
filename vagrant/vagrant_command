@@ -1,0 +1,34 @@
+[vagrant]
+
+sudo apt install vagrant
+установить vagrant
+
+
+vagrant init
+эта команда в текущей директории создаст Vagrantfile
+
+
+vagrant up
+прочитает Vagrantfile (запустит)
+
+vagrant ssh
+подключиться к машине
+(Автоматический проброс порта для ssh (хост - 2222, гость — 22))
+подключиться по SSH под юзером vagrant
+
+vagrant suspend
+поставить на паузу
+
+vagrant halt
+выключить
+
+vagrant destroy
+удалить машину
+
+vagrant box list
+cписок доступных машин
+
+
+
+
+
