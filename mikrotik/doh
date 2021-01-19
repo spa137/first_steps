@@ -1,0 +1,4 @@
+/tool fetch url=https://cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem
+/certificate import file-name=DigiCertGlobalRootCA.crt.pem passphrase=""
+
+/ip dns set use-doh-server=https://1.1.1.1/dns-query verify-doh-cert=yes
