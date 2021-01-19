@@ -4,6 +4,7 @@ git remote -v
 git remote set-url 
 
 
+
 git fetch получение изменений с сервера
 git pull получение изменений с сервера и
 слияние в локальную ветку
@@ -20,7 +21,6 @@ git merge имя_ветки слияние
 
 git log --oneline --abbrev-commit --all -
 -graph
-
 история с псевдографикой
 
 git branch ветки
@@ -32,14 +32,18 @@ git checkout -b имя_ветки
 
 git commit коммит
 
-git commit -a -m 'fixed the broken
-email address'
+git commit -a -m "fixed !"
+
+git mv переместить или переименовать
 git add . добавление
 git init инициализация
+
 git rm удалить файл
+
 git stash stash берет изменённое состояние
 вашей рабочей директории, то есть
 изменённые отслеживаемые файлы и
 проиндексированные изменения, и
 сохраняет их в хранилище
 незавершённых изменений
+

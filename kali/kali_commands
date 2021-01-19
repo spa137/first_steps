@@ -1,0 +1,4 @@
+# rdp
+hydra -V -f -t 4 -l te1 -P /home/s/wordlist rdp://10.0.0.160
+
+
