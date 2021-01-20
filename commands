@@ -16,21 +16,22 @@ ipconfig /renew
 ssh имя_пользователя@адрес
 
 # Linux: First
-# can be simplified: sudo apt update && sudo apt upgrade && sudo apt-get update && sudo apt-get upgrade
+# can be simplified: sudo apt update && sudo apt upgrade && sudo apt update && sudo apt upgrade
 sudo apt update
 sudo apt upgrade
 sudo apt-get update
 sudo apt-get upgrade
-pwd  
-whoami
+pwd в каком каталоге сейчас находимся
+whoami имя пользователя, под которым осуществили вход
 touch
 mkdir
 cp
 mv
-rm
-rmdir
+rm 
+rmdir 
 cd ..
 cd имя_каталога
+whereis где находится программа
 
 # Windows: First
 whoami
