@@ -16,7 +16,7 @@ ipconfig /renew
 ssh имя_пользователя@адрес
 
 # Linux: First
-# can be simplified: sudo apt update && sudo apt upgrade && sudo apt update && sudo apt upgrade
+# can be simplified: sudo apt update && sudo apt upgrade 
 sudo apt update
 sudo apt upgrade
 sudo apt-get update
