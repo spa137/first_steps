@@ -32,6 +32,8 @@ rmdir
 cd ..
 cd имя_каталога
 whereis где находится программа
+tree -L 2
+
 
 # Windows: First
 whoami
