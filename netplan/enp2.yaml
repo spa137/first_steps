@@ -1,0 +1,12 @@
+network:
+  version: 2
+  renderer: NetworkManager
+  ethernets:
+    enp2s0f1:
+      dhcp4: yes
+      dhcp6: no\
+      macaddress: 03:04:05:06:07:08
+#      addresses: [192.168.88.30/24, ]
+#      gateway4: 192.168.0.1
+      nameservers:
+        addresses: [1.1.1.1, 8.8.8.8]
