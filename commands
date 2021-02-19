@@ -1,6 +1,8 @@
 # SPA IT - Базовый семестр
 # https://www.youtube.com/channel/UCYNlXkl8atYZcjIbOrLjpxQ
 
+
+
 # Linux: Network
 ip a
 arp-scan 192.168.88.0/24   # https://www.youtube.com/watch?v=SGJDs_f213Y
