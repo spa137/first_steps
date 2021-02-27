@@ -2,6 +2,3 @@
 https://www.youtube.com/channel/UCYNlXkl8atYZcjIbOrLjpxQ
 Базовый курс IT
 
-1
-2
-3
