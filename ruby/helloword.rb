@@ -1,4 +1,4 @@
-#           #!/usr/bin/ruby
+#!/usr/bin/ruby
 puts "Hello, World!"
 puts 2 + 2        # це комент
 =begin
