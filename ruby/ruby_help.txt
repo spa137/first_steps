@@ -13,3 +13,19 @@ y % x остаток от деления
 
 puts (“пояснение что выводим” + res.to_s)
 .to_s перевести в строку
+
+класс Math
+Math.sqrt()
+Match.log()
+puts Match.sqrt(4)
+
+массивы
+arr = Array[3, 17, 9, 53, true, "jhghjghjghjhggh", 11.8]
+puts(arr[0]) вывод 0 элемента
+puts(arr[-1]) первый с конца
+puts(arr[1, 3])
+names[19] = "jhghjghh"
+
+arr_1 = Array.new
+
+
