@@ -1,3 +1,7 @@
+
+
+
+https://www.youtube.com/watch?v=1MYbDz06B1E&list=PL0lO_mIqDDFXr9_TtbefdNPKgYba_-XgL
 методы
 .downcase()  верхний регистр
 .upcase()    нижний регистр
@@ -112,10 +116,54 @@ file = File.open ("file.txt", "r")
 puts file.read
 file.close()
 -----------------------------------------------------------
-перезаписать весь файл
+перезаписать весь файл (или создаст и запишет)
 File.open ("file.txt", "w") do |file_1|  файл запишется в переменную file_1
   file.write ("hhhhhhhvgffffff")
 end
 -----------------------------------------------------------
- 
+
+begin
+  v_22 = 1 / 0
+rescue
+  puts "error"
+end
+
+-------
+
+
+
+begin
+  v_22 = 1 / 0
+rescue TypeError => r
+  puts r
+end
+
+-------------
+class Man
+  attr_accessor :var_1, :var_2, :var_3 
+end
+
+man1 = Man.new()
+man1.var_1 = 11
+man1.var_2 = 1455
+man1.var_3 = 13
+-----------------
+class Man
+  attr_accessor :var_1, :var_2, :var_3 
+  def initialize(var_10) #получаем переменную 10
+    puts var_10
+  end
+end
+
+man1 = Man.new()
+man1.var_1 = 11
+man1.var_2 = 1455
+man1.var_3 = 13
+
+
+
+
+
+
+
 
