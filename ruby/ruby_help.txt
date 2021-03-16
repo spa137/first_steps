@@ -13,12 +13,13 @@ y % x остаток от деления
 
 puts (“пояснение что выводим” + res.to_s)
 .to_s перевести в строку
+----------------------------------------------------
 
 класс Math
 Math.sqrt()
 Match.log()
 puts Match.sqrt(4)
-
+----------------------------------------------------
 массивы
 arr = Array[3, 17, 9, 53, true, "jhghjghjghjhggh", 11.8]
 puts(arr[0]) вывод 0 элемента
@@ -27,5 +28,67 @@ puts(arr[1, 3])
 names[19] = "jhghjghh"
 
 arr_1 = Array.new
+puts arr_1
+puts arr_1.length()  длинна
+puts arr_1.reverse() реверс
+puts arr_1.include? 655                               true false
+
+ассоциативный массив
+as_m = {
+"j" => "1lkjkl",
+7 => 3,
+:u => 7
+
+}
+
+
+puts as_m[:u]
+----------------------------------------------------
+
+метод
+def metod_1(word="значение по умолчанию", n_1=значение_по_умолчанию)
+  puts "Привет!"
+  puts (word + n_1.to_s)
+end
+
+metod_1("текст", 3)     вызвать
+
+
+def sum (x, y)
+  return x + y # возврат значения и выход из метода
+end
+res = sum(8, 10)
+----------------------------------------------------
+
+
+условия
+
+if x < y
+  puts "привет!" 
+elsif x > y
+  puts "jhghjghjghh"
+else
+  puts "noooo oooo"
+end
+
+
+var_11 = true
+if var_11
+  puts "hell"
+end
+
+case day
+when "1" 
+  var_2 = "jjjj"
+when "2"
+  var_2 = "jhghhh"
+else
+  var_2 = "jj"
+end
+
+----------------------------------------------------
+
+
+
 
 
