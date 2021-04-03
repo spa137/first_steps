@@ -1,0 +1,6 @@
+
+https://icinga.com/docs/icinga-2/latest/doc/02-installation/
+
+http://localhost/icingaweb2
+/etc/icingaweb2, make sure to set ICINGAWEB2_ADMIN_USER and ICINGAWEB2_ADMIN_PASS
+icingaadmin:icinga
