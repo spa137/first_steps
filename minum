@@ -1,0 +1,21 @@
+[spa it]
+munim
+
+
+
+sudo apt update
+apt install munin munin-node
+service munin-node start
+
+cd  /var/cache/munin/www
+
+sudo apt install nginx
+
+sudo nano /etc/nginx/sites-available/default
+
+        root /var/www/html;
+меняем
+        root /var/cache/munin/www;
+
+service nginx restart
+
