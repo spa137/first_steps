@@ -1,11 +1,12 @@
 [spa it]
-munim
+munim легкий мониторинг linux
+ubuntu 20 04
 
 
 
 sudo apt update
-apt install munin munin-node
-service munin-node start
+sudo apt install munin munin-node
+sudo service munin-node start
 
 cd  /var/cache/munin/www
 

@@ -1,0 +1,2 @@
+e4defrag -c /location оценка
+e4defrag  /location дефрагментация (пример e4defrag -c /home/s)
