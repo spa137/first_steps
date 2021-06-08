@@ -1,3 +1,3 @@
 pwd
-sleep 100
+sleep 10
 echo "hi"
