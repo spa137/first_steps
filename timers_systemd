@@ -1,0 +1,107 @@
+https://man.archlinux.org/man/systemd.timer.5
+
+systemctl status uptime2Monitor.timer
+
+
+systemctl status *timer
+
+cd /etc/systemd/system
+
+s@s-e2500n:/etc/systemd/system$ cat uptime2Monitor.service uptime2Monitor.timer
+----------------------------------------------------------------------------------
+# uptime2Monitor.service
+
+[Unit]
+Description= statistics ==> systemd journal
+Wants=uptime2Monitor.timer
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/uptime
+ExecStart=/usr/bin/date
+
+[Install]
+WantedBy=multi-user.target
+
+----------------------------------------------------------------------------------
+# uptime2Monitor.timer
+
+[Unit]
+Description=timer
+Requires=uptime2Monitor.service
+
+[Timer]
+Unit=uptime2Monitor.service
+OnBootSec=17
+
+
+[Install]
+WantedBy=timers.target
+
+----------------------------------------------------------------------------------
+
+systemctl start uptime2Monitor.timer
+systemctl stop uptime2Monitor.timer
+systemctl disable uptime2Monitor.timer
+systemctl reboot
+journalctl -S today -f -u uptime2Monitor.service
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+s@s-pc:/etc/systemd/system$ systemd-analyze calendar *:*:00 
+  Original form: *:*:00                      
+Normalized form: *-*-* *:*:00                
+    Next elapse: Sun 2021-06-20 15:08:00 EEST
+       (in UTC): Sun 2021-06-20 12:08:00 UTC 
+       From now: 52s left    
+       
+       
+       s@s-e2500n:/etc/systemd/system$ systemd-analyze calendar *:*:00 
+  Original form: *:*:00                      
+Normalized form: *-*-* *:*:00                
+    Next elapse: Sun 2021-06-20 15:54:00 EEST
+       (in UTC): Sun 2021-06-20 12:54:00 UTC 
+       From now: 24s left                    
+s@s-e2500n:/etc/systemd/system$ systemd-analyze calendar *:*:00 
+  Original form: *:*:00                      
+Normalized form: *-*-* *:*:00                
+    Next elapse: Sun 2021-06-20 15:54:00 EEST
+       (in UTC): Sun 2021-06-20 12:54:00 UTC 
+       From now: 21s left                    
+s@s-e2500n:/etc/systemd/system$ systemd-analyze calendar *:*:00 
+  Original form: *:*:00                      
+Normalized form: *-*-* *:*:00                
+    Next elapse: Sun 2021-06-20 15:54:00 EEST
+       (in UTC): Sun 2021-06-20 12:54:00 UTC 
+       From now: 19s left                    
+s@s-e2500n:/etc/systemd/system$ systemd-analyze calendar *:*:00 
+  Original form: *:*:00                      
+Normalized form: *-*-* *:*:00                
+    Next elapse: Sun 2021-06-20 15:54:00 EEST
+       (in UTC): Sun 2021-06-20 12:54:00 UTC 
+       From now: 18s left                    
+s@s-e2500n:/etc/systemd/system$ systemd-analyze calendar *:*:00 
+  Original form: *:*:00                      
+Normalized form: *-*-* *:*:00                
+    Next elapse: Sun 2021-06-20 15:54:00 EEST
+       (in UTC): Sun 2021-06-20 12:54:00 UTC 
+       From now: 17s left                    
+
+ 
