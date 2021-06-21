@@ -1,0 +1,277 @@
+
+
+systemd-analyze
+
+
+Startup finished in 4.880s (firmware) + 15.122s (loader) + 6.659s (kernel) + 1min 3.471s (userspace) = 1min 30.133s 
+graphical.target reached after 1min 3.442s in userspace
+s@s-pc:~$ 
+
+
+
+
+systemd-analyze blame 
+prints a list of all running units, ordered by the time they took to initialize. This information may be used to optimize boot-up times. *Note that the output might be misleading as the initialization of one service might be slow simply because it waits for the initialization of another service to complete.
+
+
+
+    Вывести время, которое потребовалось для загрузки каждого из юнитов:
+
+systemd-analyze blame
+
+    Вывести цепочку юнитов с наибольшим временем загрузки.
+
+systemd-analyze critical-chain
+
+
+
+systemd-analyze plot > deps.svg
+
+
+
+
+
+
+
+
+
+s@s-pc:~$ systemctl status bluetooth.service  
+● bluetooth.service - Bluetooth service
+     Loaded: loaded (/lib/systemd/system/bluetooth.service; enabled; vendor preset: enabled)
+     Active: active (running) since Mon 2021-06-21 17:20:52 EEST; 36min ago
+       Docs: man:bluetoothd(8)
+   Main PID: 1022 (bluetoothd)
+     Status: "Running"
+      Tasks: 1 (limit: 4399)
+     Memory: 1.7M
+     CGroup: /system.slice/bluetooth.service
+             └─1022 /usr/lib/bluetooth/bluetoothd
+
+июн 21 17:20:42 s-pc systemd[1]: Starting Bluetooth service...
+июн 21 17:20:42 s-pc bluetoothd[1022]: Bluetooth daemon 5.53
+июн 21 17:20:52 s-pc systemd[1]: Started Bluetooth service.
+июн 21 17:20:52 s-pc bluetoothd[1022]: Starting SDP server
+июн 21 17:20:52 s-pc bluetoothd[1022]: Bluetooth management interface 1.14 initialized
+июн 21 17:21:25 s-pc bluetoothd[1022]: Endpoint registered: sender=:1.41 path=/MediaEndpoint/A2DPSink/sbc
+июн 21 17:21:25 s-pc bluetoothd[1022]: Endpoint registered: sender=:1.41 path=/MediaEndpoint/A2DPSource/sbc
+s@s-pc:~$ systemctl disable bluetooth.service  
+Synchronizing state of bluetooth.service with SysV service script with /lib/systemd/systemd-sysv-install.
+Executing: /lib/systemd/systemd-sysv-install disable bluetooth
+update-rc.d: error: Permission denied
+s@s-pc:~$ sudo !!
+sudo systemctl disable bluetooth.service  
+[sudo] password for s: 
+Synchronizing state of bluetooth.service with SysV service script with /lib/systemd/systemd-sysv-install.
+Executing: /lib/systemd/systemd-sysv-install disable bluetooth
+Removed /etc/systemd/system/dbus-org.bluez.service.
+Removed /etc/systemd/system/bluetooth.target.wants/bluetooth.service.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+nano /etc/bluetooth/main.conf
+
+
+
+
+
+
+
+
+
+
+systemctl list-unit-files --type=service | grep enabled
+
+
+
+
+
+
+
+
+
+https://blog.sedicomm.com/2018/03/28/systemd-analysis-utilita-monitoringa-statistiki-zagruzki-sistemy-linux/
+
+
+systemd-analyze blame
+
+
+s@s-pc:~$ systemd-analyze -h 
+systemd-analyze [OPTIONS...] COMMAND ...
+
+Profile systemd, show unit dependencies, check unit files.
+
+Commands:
+  [time]                   Print time required to boot the machine
+  blame                    Print list of running units ordered by time to init
+  critical-chain [UNIT...] Print a tree of the time critical chain of units
+  plot                     Output SVG graphic showing service initialization
+  dot [UNIT...]            Output dependency graph in dot(1) format
+  dump                     Output state serialization of service manager
+  cat-config               Show configuration file and drop-ins
+  unit-files               List files and symlinks for units
+  unit-paths               List load directories for units
+  exit-status [STATUS...]  List exit status definitions
+  syscall-filter [NAME...] Print list of syscalls in seccomp filter
+  condition CONDITION...   Evaluate conditions and asserts
+  verify FILE...           Check unit files for correctness
+  calendar SPEC...         Validate repetitive calendar time events
+  timestamp TIMESTAMP...   Validate a timestamp
+  timespan SPAN...         Validate a time span
+  security [UNIT...]       Analyze security of unit
+
+Options:
+  -h --help                Show this help
+     --version             Show package version
+     --no-pager            Do not pipe output into a pager
+     --system              Operate on system systemd instance
+     --user                Operate on user systemd instance
+     --global              Operate on global user configuration
+  -H --host=[USER@]HOST    Operate on remote host
+  -M --machine=CONTAINER   Operate on local container
+     --order               Show only order in the graph
+     --require             Show only requirement in the graph
+     --from-pattern=GLOB   Show only origins in the graph
+     --to-pattern=GLOB     Show only destinations in the graph
+     --fuzz=SECONDS        Also print services which finished SECONDS earlier
+                           than the latest in the branch
+     --man[=BOOL]          Do [not] check for existence of man pages
+     --generators[=BOOL]   Do [not] run unit generators (requires privileges)
+     --iterations=N        Show the specified number of iterations
+     --base-time=TIMESTAMP Calculate calendar times relative to specified time
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://man.archlinux.org/man/systemd.timer.5
+
+systemctl status uptime2Monitor.timer
+
+
+systemctl status *timer
+
+cd /etc/systemd/system
+
+s@s-e2500n:/etc/systemd/system$ cat uptime2Monitor.service uptime2Monitor.timer
+----------------------------------------------------------------------------------
+# uptime2Monitor.service
+
+[Unit]
+Description= statistics ==> systemd journal
+Wants=uptime2Monitor.timer
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/uptime
+ExecStart=/usr/bin/date
+
+[Install]
+WantedBy=multi-user.target
+
+----------------------------------------------------------------------------------
+# uptime2Monitor.timer
+
+[Unit]
+Description=timer
+Requires=uptime2Monitor.service
+
+[Timer]
+Unit=uptime2Monitor.service
+OnBootSec=17
+
+
+[Install]
+WantedBy=timers.target
+
+----------------------------------------------------------------------------------
+
+systemctl start uptime2Monitor.timer
+systemctl stop uptime2Monitor.timer
+systemctl disable uptime2Monitor.timer
+systemctl reboot
+journalctl -S today -f -u uptime2Monitor.service
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+s@s-pc:/etc/systemd/system$ systemd-analyze calendar *:*:00 
+  Original form: *:*:00                      
+Normalized form: *-*-* *:*:00                
+    Next elapse: Sun 2021-06-20 15:08:00 EEST
+       (in UTC): Sun 2021-06-20 12:08:00 UTC 
+       From now: 52s left    
+       
+       
+       s@s-e2500n:/etc/systemd/system$ systemd-analyze calendar *:*:00 
+  Original form: *:*:00                      
+Normalized form: *-*-* *:*:00                
+    Next elapse: Sun 2021-06-20 15:54:00 EEST
+       (in UTC): Sun 2021-06-20 12:54:00 UTC 
+       From now: 24s left                    
+s@s-e2500n:/etc/systemd/system$ systemd-analyze calendar *:*:00 
+  Original form: *:*:00                      
+Normalized form: *-*-* *:*:00                
+    Next elapse: Sun 2021-06-20 15:54:00 EEST
+       (in UTC): Sun 2021-06-20 12:54:00 UTC 
+       From now: 21s left                    
+s@s-e2500n:/etc/systemd/system$ systemd-analyze calendar *:*:00 
+  Original form: *:*:00                      
+Normalized form: *-*-* *:*:00                
+    Next elapse: Sun 2021-06-20 15:54:00 EEST
+       (in UTC): Sun 2021-06-20 12:54:00 UTC 
+       From now: 19s left                    
+s@s-e2500n:/etc/systemd/system$ systemd-analyze calendar *:*:00 
+  Original form: *:*:00                      
+Normalized form: *-*-* *:*:00                
+    Next elapse: Sun 2021-06-20 15:54:00 EEST
+       (in UTC): Sun 2021-06-20 12:54:00 UTC 
+       From now: 18s left                    
+s@s-e2500n:/etc/systemd/system$ systemd-analyze calendar *:*:00 
+  Original form: *:*:00                      
+Normalized form: *-*-* *:*:00                
+    Next elapse: Sun 2021-06-20 15:54:00 EEST
+       (in UTC): Sun 2021-06-20 12:54:00 UTC 
+       From now: 17s left                    
+
+ 
