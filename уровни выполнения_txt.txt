@@ -1,0 +1,193 @@
+﻿Уровень выполнения (уровень инициализации, уровень запуска) — нумерованный режим функционирования операционной системы, подразумевающий наличие в нём тех или иных функций
+
+
+
+            0 — Используется для выключение ОС. 
+      1 — Однопользовательский режим (single user mode). Служит для различных административных действий по восстановлению системы. На 1-м уровне выполнения,  ОС сконфигурирована полностью, но при этом, не запущен ни один из сервисов, а из юзеров — работает только root-юзер. 
+      2 — Данный левел не юзается, но настроен как уровень выполнения 3. В rpm ОС, даный уровень сконфигурирован как уровень 3, но без поддержки сетевых файловых систем. В deb ОС используется как многопользовательский режим. 
+      3 — Многопользовательский режим (multiuser mode). Нормальный режим работы сервера. 
+      4 — В Slackware Linux настроен для графического входа в ОС. В rpm — не сконфигурирован вообще. 
+      5 — В deb и rpm системах, данный уровень предназначен для графического входа в систему, но Slackware Linux не сконфигурирован вообще. 
+      6 — Используется для перезагрузки ОС. 
+
+
+
+
+
+s@s-pc:~$ cd /lib/systemd/system/
+lrwxrwxrwx  1 root root    15 мая 27 18:16  runlevel0.target -> poweroff.target
+lrwxrwxrwx  1 root root    13 мая 27 18:16  runlevel1.target -> 
+drwxr-xr-x  2 root root  4096 окт 11  2019  runlevel1.target.wants/
+lrwxrwxrwx  1 root root    17 мая 27 18:16  runlevel2.target -> multi-user.target
+drwxr-xr-x  2 root root  4096 окт 11  2019  runlevel2.target.wants/
+lrwxrwxrwx  1 root root    17 мая 27 18:16  runlevel3.target -> multi-user.target
+drwxr-xr-x  2 root root  4096 окт 11  2019  runlevel3.target.wants/
+lrwxrwxrwx  1 root root    17 мая 27 18:16  runlevel4.target -> multi-user.target
+drwxr-xr-x  2 root root  4096 окт 11  2019  runlevel4.target.wants/
+lrwxrwxrwx  1 root root    16 мая 27 18:16  runlevel5.target -> graphical.target
+drwxr-xr-x  2 root root  4096 окт 11  2019  runlevel5.target.wants/
+lrwxrwxrwx  1 root root    13 мая 27 18:16  runlevel6.target -> reboot.target
+
+
+
+
+
+
+
+
+
+
+s@s-e2500n:~$ runlevel 
+         N 5
+s@s-e2500n:~$ who -r
+         run-level 5  2021-06-25 17:24                   last=3
+
+s@s-e2500n:~$ systemctl get-default
+graphical.target
+
+s@s-e2500n:~$ sudo systemctl isolate multi-user.target
+[sudo] password for s: 
+s@s-e2500n:~$ runlevel
+5 3
+
+
+s@s-e2500n:~$ systemctl set-default multi-user.target
+==== AUTHENTICATING FOR org.freedesktop.systemd1.manage-unit-files ===
+Authentication is required to manage system service or unit files.                                                                    
+Authenticating as: s
+Password: 
+==== AUTHENTICATION COMPLETE ===
+Created symlink /etc/systemd/system/default.target → /lib/systemd/system/multi-user.target.                                           
+==== AUTHENTICATING FOR org.freedesktop.systemd1.reload-daemon ===
+Authentication is required to reload the systemd state.                                                                               
+Authenticating as: s
+Password: 
+==== AUTHENTICATION COMPLETE ===
+s@s-e2500n:~$                        
+
+
+systemctl list-dependencies graphical.target
+
+systemctl set-default graphical.target
+sudo systemctl isolate  rescue.target
+
+
+runlevel
+
+
+s@s-e2500n:~$ systemctl show -p WantedBy sshd.service
+WantedBy=multi-user.target
+
+systemctl list-dependencies poweroff.target 
+
+s@s-pc:~$ systemctl get-default
+graphical.target
+
+
+
+systemctl list-dependencies graphical.target
+systemctl show -p WantedBy [name of service]
+systemctl show -p WantedBy 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+s@s-pc:/lib/systemd/system$ systemctl show -p WantedBy sshd.service
+WantedBy=multi-user.target
+systemctl enable sshd.service
+
+
+Для моментального переключения уровня выполнения программ, например уровень 3 (консольный текстовый многопользовательский):
+> sudo systemctl isolate multi-user.target
+
+Для того чтобы поменять уровень загрузки по умолчанию:
+> sudo systemctl enable multi-user.target
+> sudo systemctl set-default multi-user.target
+
+
+https://wiki.merionet.ru/servernye-resheniya/42/runlevel-v-linux-chto-eto-i-s-chem-edyat/
+
+
+
+
+
+
+
+Runlevel 0 = poweroff.target (runlevel0.target) 
+    • Runlevel 1 = rescue.target (runlevel1.target) 
+    • Runlevel 2 = multi-user.target (runlevel2.target) 
+    • Runlevel 3 = multi-user.target (runlevel3.target) 
+    • Runlevel 4 = multi-user.target (runlevel4.target) 
+    • Runlevel 5 = graphical.target (runlevel5.target) 
+    • Runlevel 6 = reboot.target (runlevel6.target) 
+
+
+
+
+
+
+
+
+
+
+
+Telinit
+
+После выполнения команды указанной выше, ваш экран может стать пустым. Это потому, что вы остались на пустом терминале, чтобы вернутся на рабочий терминал нажмите комбинацию клавиш Alt+F1.
+
+
+
+
+Runlevel 1 сброс пароля
+
+
+
+https://linux-notes.org/sistema-initsializatsii-v-unix-linux/
+
+
+
+
+https://linux-notes.org/runlevel-v-unix-linux/
+
+
+
+
+
+s@s-pc:~$ runlevel
+N 5
+
+
+https://ru.wikipedia.org/wiki/%D0%A3%D1%80%D0%BE%D0%B2%D0%B5%D0%BD%D1%8C_%D0%B2%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F
+
+
+
+
+https://habr.com/ru/post/113350/
+
+только активные цели
+systemctl list-units --type target
+
+
+
