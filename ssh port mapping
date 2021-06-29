@@ -1,0 +1,38 @@
+-L local_socket:remote_socket
+-N      Do not execute a remote command.  This is useful for just forwarding ports.
+
+
+пробросить дженкинс
+
+
+ssh -L 50000:localhost:8080 s@192.168.88.217 -N
+
+
+
+http://films-torrent.ru/
+
+;; ANSWER SECTION:
+films-torrent.ru.       7155    IN      A       37.1.201.203
+
+ssh -L 50001:37.1.201.203:80 s@192.168.88.217 -N
+
+
+;; ANSWER SECTION:
+www.mediapapa.org.      251     IN      A       172.67.195.26
+www.mediapapa.org.      251     IN      A       104.21.36.144
+
+
+
+пробросить укр нет
+212.42.76.252
+ssh -L 50002:212.42.76.252:443 s@192.168.88.217 -N
+
+
+
+http://127.0.0.1:50001/
+
+400 Bad Request
+The plain HTTP request was sent to HTTPS port
+nginx
+
+
