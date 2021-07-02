@@ -1,0 +1,17 @@
+
+*********************
+репозиторий
+
+https://interface31.ru/tech_it/2019/09/ustanovka-i-nastroyka-proxmox-ve-60.html
+
+
+
+rm -f /etc/apt/sources.list.d/pve-enterprise.list
+
+Затем создадим свой список:
+
+touch /etc/apt/sources.list.d/pve-no-subscription.list
+
+В который внесем следующие строки:
+
+deb http://download.proxmox.com/debian/pve buster pve-no-subscription
