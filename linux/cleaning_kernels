@@ -1,0 +1,5 @@
+https://help.ubuntu.ru/wiki/%D1%83%D0%B4%D0%B0%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5_%D1%81%D1%82%D0%B0%D1%80%D1%8B%D1%85_%D1%8F%D0%B4%D0%B5%D1%80
+sudo apt-get purge $(dpkg -l 'linux-*' | sed '/^ii/!d;/'"$(uname -r | sed "s/\(.*\)-\([^0-9]\+\)/\1/")"'/d;s/^[^ ]* [^ ]* \([^ ]*\).*/\1/;/[0-9]/!d' | head -n -1)
+sudo apt-get autoremove
+sudo apt-get autoclean
+sudo apt-get autoremove
