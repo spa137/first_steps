@@ -1,0 +1,162 @@
+
+
+*****************************************************************************************************************************
+qm list
+
+      VMID NAME                 STATUS     MEM(MB)    BOOTDISK(GB) PID       
+       100 Windows7             stopped    2048              32.00 0         
+       101 lubuntu              stopped    2048              32.00 0         
+       102 Copy-of-VM-Windows7  stopped    2048              32.00 0         
+       103 Copy-of-VM-lubuntu   running    2048              32.00 10980     
+       104 ubuntuserver         stopped    2048              32.00 0         
+       105 Copy-of-VM-ubuntuserver stopped    2048              32.00 0         
+       106 w2012r20993676664aA  running    2048              32.00 10226  
+*****************************************************************************************************************************
+qm start 103
+
+*****************************************************************************************************************************
+
+!!!!!!!!!!!!!!!!!!!!                                установить в консоле и включить в графике
+
+root@pve:~# qm guest cmd 103 network-get-interfaces
+No QEMU guest agent configured
+
+value in the enumeration 'fsfreeze-freeze, fsfreeze-status, fsfreeze-thaw, fstrim, get-fsinfo, get-host-name, get-memory-block-info, get-memory-blocks, get-osinfo, get-time, get-timezone, get-users, get-vcpus, info, network-get-interfaces, ping, shutdown, suspend-disk, suspend-hybrid, suspend-ram'
+
+
+    Update the package index:
+
+    # sudo apt update
+
+    Install qemu-guest-agent deb package:
+
+    # sudo apt install qemu-guest-agent
+    
+    
+ qm guest cmd 103 network-get-interfaces
+[
+   {
+      "hardware-address" : "00:00:00:00:00:00",
+      "ip-addresses" : [
+         {
+            "ip-address" : "127.0.0.1",
+            "ip-address-type" : "ipv4",
+            "prefix" : 8
+         },
+         {
+            "ip-address" : "::1",
+            "ip-address-type" : "ipv6",
+            "prefix" : 128
+         }
+      ],
+      "name" : "lo",
+      "statistics" : {
+         "rx-bytes" : 18055,
+         "rx-dropped" : 0,
+         "rx-errs" : 0,
+         "rx-packets" : 199,
+         "tx-bytes" : 18055,
+         "tx-dropped" : 0,
+         "tx-errs" : 0,
+         "tx-packets" : 199
+      }
+   },
+   {
+      "hardware-address" : "5a:38:df:56:c2:41",
+      "ip-addresses" : [
+         {
+            "ip-address" : "192.168.88.152",
+            "ip-address-type" : "ipv4",
+            "prefix" : 24
+         },
+         {
+            "ip-address" : "fe80::7606:b2e3:81e:5f48",
+            "ip-address-type" : "ipv6",
+            "prefix" : 64
+         }
+      ],
+      "name" : "ens18",
+      "statistics" : {
+         "rx-bytes" : 31019,
+         "rx-dropped" : 283,
+         "rx-errs" : 0,
+         "rx-packets" : 352,
+         "tx-bytes" : 9305,
+         "tx-dropped" : 0,
+         "tx-errs" : 0,
+         "tx-packets" : 78
+      }
+   }
+]
+root@pve:~# 
+    
+*************************************************************************************************************************
+root@pve:~# qm guest exec 103 reboot
+QEMU guest agent is not running
+
+*************************************************************************************************************************
+    
+qm shutdown 103
+
+*************************************************************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+       qm cloudinit dump <vmid> <type>
+
+       qm guest cmd <vmid> <command>
+       qm guest exec-status <vmid> <pid>
+       qm guest passwd <vmid> <username> [OPTIONS]
+       qm guest exec <vmid> [<extra-args>] [OPTIONS]
+
+       qm clone <vmid> <newid> [OPTIONS]
+       qm config <vmid> [OPTIONS]
+       qm create <vmid> [OPTIONS]
+       qm delsnapshot <vmid> <snapname> [OPTIONS]
+       qm destroy <vmid> [OPTIONS]
+       qm list  [OPTIONS]
+       qm listsnapshot <vmid>
+       qm migrate <vmid> <target> [OPTIONS]
+       qm move_disk <vmid> <disk> <storage> [OPTIONS]
+       qm pending <vmid>
+       qm reboot <vmid> [OPTIONS]
+       qm reset <vmid> [OPTIONS]
+       qm resize <vmid> <disk> <size> [OPTIONS]
+       qm resume <vmid> [OPTIONS]
+       qm rollback <vmid> <snapname>
+       qm sendkey <vmid> <key> [OPTIONS]
+       qm set <vmid> [OPTIONS]
+       qm shutdown <vmid> [OPTIONS]
+       qm snapshot <vmid> <snapname> [OPTIONS]
+       qm start <vmid> [OPTIONS]
+       qm stop <vmid> [OPTIONS]
+       qm suspend <vmid> [OPTIONS]
+       qm template <vmid> [OPTIONS]
+       qm unlink <vmid> --idlist <string> [OPTIONS]
+
+       qm cleanup <vmid> <clean-shutdown> <guest-requested>
+       qm importdisk <vmid> <source> <storage> [OPTIONS]
+       qm importovf <vmid> <manifest> <storage> [OPTIONS]
+       qm monitor <vmid>
+       qm mtunnel 
+       qm nbdstop <vmid>
+       qm rescan  [OPTIONS]
+       qm showcmd <vmid> [OPTIONS]
+       qm status <vmid> [OPTIONS]
+       qm terminal <vmid> [OPTIONS]
+       qm unlock <vmid>
+       qm vncproxy <vmid>
+       qm wait <vmid> [OPTIONS]
+
+       qm help [<extra-args>] [OPTIONS]
+       
+       
+       
