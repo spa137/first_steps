@@ -1,0 +1,8 @@
+sudo apt update
+sudo apt install nfs-common
+
+
+sudo mount host_ip:/var/nfs/general /nfs/general
+
+sudo mount 192.168.88.252:/mnt/hdd1 /home/s/share1
+sudo umount --lazy 192.168.88.252:/mnt/hdd1/ss
