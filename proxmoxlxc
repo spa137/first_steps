@@ -1,0 +1,179 @@
+
+https://pve.proxmox.com/wiki/Linux_Container
+
+
+Список доступних шаблонів оновлюється щодня за допомогою таймера pve-daily-update. Ви також можете ініціювати оновлення вручну, виконавши:
+pveam update
+
+
+
+Щоб переглянути список доступних зображень, виконайте такі дії:
+
+
+pveam available
+
+pveam available --section system
+
+
+
+Перш ніж ви зможете використовувати такий шаблон, його потрібно завантажити в одне зі сховищ. Якщо ви не впевнені, який саме, можна просто скористатися для цієї мети локальним сховищем. Для кластерних установок бажано використовувати спільне сховище, щоб усі вузли мали доступ до цих образів.
+
+
+pveam download local debian-10.0-standard_10.0-1_amd64.tar.gz
+
+
+Тепер ви готові створювати контейнери за допомогою цього зображення, і ви можете перелічити всі завантажені зображення на локальному сховищі за допомогою:
+
+pveam list local
+local:vztmpl/debian-10.0-standard_10.0-1_amd64.tar.gz  219.95MB
+
+
+
+Ви також можете використовувати графічний інтерфейс веб -інтерфейсу Proxmox VE для завантаження, переліку та видалення шаблонів контейнерів.
+
+pct використовує їх для створення нового контейнера, наприклад:
+
+pct create 7009 local:vztmpl/debian-10.0-standard_10.0-1_amd64.tar.gz
+
+
+
+Наведена вище команда показує вам повні ідентифікатори томів Proxmox VE. Вони містять назву сховища, і більшість інших команд Proxmox VE можуть їх використовувати. Наприклад, ви можете видалити це зображення пізніше за допомогою:
+
+pveam remove local:vztmpl/debian-10.0-standard_10.0-1_amd64.tar.gz
+
+
+
+pct enter <VMID>
+
+pct enter 7001
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://download.cloudlinux.com/cloudlinux/images/
+
+
+
+wget https://download.cloudlinux.com/cloudlinux/images/cloudlinux-8.4-x86_64-openstack-20210716.qcow2
+qm create 7000 --name "cloudlinux" --memory 2048 --net0 virtio,bridge=vmbr0
+qm importdisk 7000 cloudlinux-8.4-x86_64-openstack-20210716.qcow2 local-lvm
+qm set 7000 --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-7000-disk-0
+qm set 7000 --serial0 socket --vga serial0
+
+
+
+
+
+
+
+
+
+qemu-img convert \
+    -f raw \
+    -O qcow2 \
+    /root/temp/chr-$version.img \
+    /var/lib/vz/images/$vmID/vm-$vmID-disk-1.qcow2
+    
+    
+qemu-img convert -f raw -O qcow2 chr-6.48.3.img chr-6.48.3.img.qcow2   
+    
+
+apt install unzip
+
+wget https://download.mikrotik.com/routeros/6.48.3/chr-6.48.3.img.zip
+unzip chr-6.48.3.img.zip
+qm create 7000 --name "mikrotik" --memory 2048 --net0 virtio,bridge=vmbr0
+qemu-img convert -f raw -O qcow2 chr-6.48.3.img chr-6.48.3.img.qcow2   
+
+https://docs.openstack.org/image-guide/convert-images.html
+
+
+wget https://download.mikrotik.com/routeros/6.48.3/chr-6.48.3.vmdk
+
+qemu-img convert -f vmdk -O qcow2 chr-6.48.3.vmdk chr-6.48.3.qcow2
+qm create 7000 --name "mikrotik" --memory 2048 --net0 virtio,bridge=vmbr0
+
+qm importdisk 7000 chr-6.48.3.qcow2 local-lvm
+qm set 7000 --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-7000-disk-0
+qm set 7000 --serial0 socket --vga serial0
+
+
+
+
+wget https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-disk-kvm.img
+
+qm create 7000 --name "ubuntu-2104-cloudinit-template" --memory 2048 --net0 virtio,bridge=vmbr0
+
+mv focal-server-cloudimg-amd64-disk-kvm.img focal-server-cloudimg-amd64-disk-kvm.qcow2
+
+qm importdisk 7000 focal-server-cloudimg-amd64-disk-kvm.qcow2 local-lvm
+
+qm set 7000 --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-7000-disk-0
+
+qm set 7000 --ide2 local-lvm:cloudinit
+
+qm set 7000 --boot c --bootdisk scsi0
+
+qm set 7000 --serial0 socket --vga serial0
+
+qm template 7000
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------
+
+https://norocketscience.at/deploy-proxmox-virtual-machines-using-cloud-init/
+
+
+wget https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img
+
+qm create 9000 --name "ubuntu-1804-cloudinit-template" --memory 2048 --net0 virtio,bridge=vmbr0
+
+mv bionic-server-cloudimg-amd64.img bionic-server-cloudimg-amd64.qcow2
+
+qm importdisk 9000 bionic-server-cloudimg-amd64.qcow2 local-lvm
+
+
+qm set 9000 --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-9000-disk-0
+
+
+qm set 9000 --ide2 local-lvm:cloudinit
+
+qm set 9000 --boot c --bootdisk scsi0
+
+qm set 9000 --serial0 socket --vga serial0
+
+qm template 9000
+
+qm clone 9000 900 --name my-virtual-machine
+
+qm set 900 --sshkey ~/.ssh/id_rsa.pub 
+qm set 900 --ipconfig0 ip=192.168.88.253/24,gw=192.168.88.1
+
+
