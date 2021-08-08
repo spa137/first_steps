@@ -1,0 +1,12 @@
+scp -r s@192.168.88.250:/home/s/data2/ /home/s/
+cd /var/lib/vz/images/
+
+./var/lib/vz/images/109/vm-109-disk-1.qcow2
+./var/lib/vz/images/109/vm-109-disk-0.qcow2
+./var/lib/vz/images/111/vm-111-disk-0.qcow2
+./var/lib/vz/images/107/base-107-disk-0.qcow2
+./var/lib/vz/images/110/vm-110-disk-1.qcow2
+./var/lib/vz/images/110/vm-110-disk-0.qcow2
+
+
+scp -r root@192.168.88.250:/var/lib/vz/images/109/vm-109-disk-1.qcow2 /home/s/
