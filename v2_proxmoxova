@@ -1,0 +1,47 @@
+
+export mk.ova
+
+Локальная машина
+
+tar -tf mk.ova
+mk.ovf
+MikroTik_RouterOS_CHR-disk001.vmdk
+mk.mf
+
+
+-t, --list Список содержимого архива
+
+
+
+tar -xvf mk.ova
+
+lub.ovf
+lub-disk001.vmdk
+lub.mf
+
+
+Проксмокс
+проверь pwd
+scp -r  /home/s/MikroTik_RouterOS_CHR-disk001.vmdk  root@192.168.88.250:/root/
+
+qemu-img convert -O qcow2 MikroTik_RouterOS_CHR-disk001.vmdk MikroTik_RouterOS_CHR-disk001.qcov2
+
+qm create 9001 --name "mk" --memory 2048 --net0 virtio,bridge=vmbr0
+
+
+qm importdisk 9001 MikroTik_RouterOS_CHR-disk001.qcov2 local-lvm
+
+
+
+
+
+
+qm set 7000 --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-7000-disk-0
+
+в графике отредактировать порядок загрузки
+---------------------------------------------------
+
+
+
+
+
