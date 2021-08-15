@@ -1,0 +1,32 @@
+
+
+https://kodistd.blogspot.com/2015/02/prxoxmox.html
+
+
+Локальная машина
+tar -tf lub2104.ova
+tar -xvf lub2104.ova
+
+lub.ovf
+lub-disk001.vmdk
+lub.mf
+
+
+Проксмокс
+проверь pwd
+scp -r  /home/s/lub-disk001.vmdk  root@192.168.88.250:/root/
+
+qemu-img convert -O qcow2 lub-disk001.vmdk lub-disk001.qcov2
+
+qm create 7000 --name "ovalu" --memory 2048 --net0 virtio,bridge=vmbr0
+
+
+qm importdisk 7000 lub-disk001.qcov2 local-lvm
+
+qm set 7000 --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-7000-disk-0
+
+
+
+
+
+
