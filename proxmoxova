@@ -25,6 +25,8 @@ qm importdisk 7000 lub-disk001.qcov2 local-lvm
 
 qm set 7000 --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-7000-disk-0
 
+в графике отредактировать порядок загрузки
+---------------------------------------------------
 
 
 
