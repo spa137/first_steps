@@ -1,0 +1,36 @@
+
+Локальный хост
+
+/home/s/
+
+chr-6.48.3.vmdk
+
+scp -r  /home/s/chr-6.48.3.vmdk  root@192.168.88.250:/root/
+
+
+
+Проксмокс
+
+
+qemu-img convert -O qcow2 chr-6.48.3.vmdk chr-6.48.3.qcov2
+
+qm create 7000 --name "mikrotik" --memory 2048 --net0 virtio,bridge=vmbr0
+
+
+qm importdisk 7000 chr-6.48.3.qcov2 local-lvm
+
+в графике
+делать диск активным
+отредактировать порядок загрузки
+
+
+
+qm set 7000 --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-7000-disk-0
+
+
+---------------------------------------------------
+
+
+
+
+
