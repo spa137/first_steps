@@ -1,0 +1,28 @@
+https://pbs.proxmox.com/docs/installation.html
+
+Proxmox Backup No-Subscription Repository
+
+
+
+rm -f /etc/apt/sources.list.d/pbs-enterprise.list
+
+Затем создадим свой список:
+
+touch /etc/apt/sources.list.d/pve-no-subscription.list
+
+nano /etc/apt/sources.list.d/pve-no-subscription.list
+
+
+В который внесем следующие строки:
+# PBS pbs-no-subscription repository provided by proxmox.com,
+# NOT recommended for production use
+deb http://download.proxmox.com/debian/pbs bullseye pbs-no-subscription
+
+
+
+
+proxmox-backup-manager cert info | grep Fingerprint
+
+
+
+
