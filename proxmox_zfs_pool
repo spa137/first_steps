@@ -1,0 +1,218 @@
+ssh root@192.168.88.101
+
+-----------------------------------------------------
+root@pve:~#  lsblk
+NAME   MAJ:MIN RM    SIZE RO TYPE MOUNTPOINT
+sda      8:0    0     10G  0 disk 
+|-sda1   8:1    0   1007K  0 part 
+|-sda2   8:2    0    512M  0 part 
+`-sda3   8:3    0    9.5G  0 part 
+sdb      8:16   0     10G  0 disk 
+sdc      8:32   0     10G  0 disk 
+sdd      8:48   0     10G  0 disk 
+sde      8:64   0     10G  0 disk 
+sdf      8:80   0     10G  0 disk 
+sdg      8:96   0     10G  0 disk 
+sdh      8:112  0     10G  0 disk 
+sdi      8:128  0     10G  0 disk 
+|-sdi1   8:129  0   1007K  0 part 
+|-sdi2   8:130  0    512M  0 part 
+`-sdi3   8:131  0    9.5G  0 part 
+sdj      8:144  0     10G  0 disk 
+|-sdj1   8:145  0   1007K  0 part 
+|-sdj2   8:146  0    512M  0 part 
+`-sdj3   8:147  0    9.5G  0 part 
+sr0     11:0    1 1015.6M  0 rom  
+-----------------------------------------------------
+
+* fdisk -l
+
+
+
+-----------------------------------------------------
+
+root@pve:~# zpool status rpool
+  pool: rpool
+ state: ONLINE
+config:
+
+        NAME                                            STATE     READ WRITE CKSUM
+        rpool                                           ONLINE       0     0     0
+          raidz1-0                                      ONLINE       0     0     0
+            scsi-0QEMU_QEMU_HARDDISK_drive-scsi0-part3  ONLINE       0     0     0
+            scsi-0QEMU_QEMU_HARDDISK_drive-scsi2-part3  ONLINE       0     0     0
+            scsi-0QEMU_QEMU_HARDDISK_drive-scsi1-part3  ONLINE       0     0     0
+
+errors: No known data errors
+
+
+-----------------------------------------------------
+
+зеркало и 2 резерва
+zpool create pooldata mirror sdd sde spare sdf sdg
+
+root@pve:/# cd /pooldata
+root@pve:/pooldata# ls
+root@pve:/pooldata# mkdir test
+root@pve:/pooldata# ls
+
+
+отключаем диск 3
+
+
+root@pve:~# zpool status pooldata
+  pool: appool
+ state: DEGRADED
+status: One or more devices could not be used because the label is missing or
+        invalid.  Sufficient replicas exist for the pool to continue
+        functioning in a degraded state.
+action: Replace the device using 'zpool replace'.
+   see: https://openzfs.github.io/openzfs-docs/msg/ZFS-8000-4J
+  scan: resilvered 183K in 00:00:02 with 0 errors on Mon Aug 23 08:45:22 2021
+config:
+
+        NAME         STATE     READ WRITE CKSUM
+        appool       DEGRADED     0     0     0
+          mirror-0   DEGRADED     0     0     0
+            sdb      ONLINE       0     0     0
+            spare-1  DEGRADED     0     0     0
+              sdc    UNAVAIL      3    54     0
+              sde    ONLINE       0     0     0
+        spares
+          sde        INUSE     currently in use
+          sdf        AVAIL   
+
+---------------------------------------------------------------------------------------------------
+
+
+
+https://mertviyprorok.com/articles/instructions/sistemy-virtualizacii/proxmox-vosstanovlenie-zfs-raid1-posle-zameny-diska-efi-bios/
+
+zpool detach rpool /dev/disk/by-id/ata-VBOX_HARDDISK_VB06e95e61-403d7e2b-part3
+zpool attach rpool /dev/disk/by-id/ata-VBOX_HARDDISK_VBfb65757e-ea936e4d-part3 /dev/disk/by-id/ata-VBOX_HARDDISK_VB9b8d476a-b387a510-part3
+
+zpool status rpool
+
+https://ubuntu.com/tutorials/setup-zfs-storage-pool#1-overview
+
+To create a striped pool, we run:
+
+sudo zpool create new-pool /dev/sdb /dev/sdc
+
+To create a mirrored pool, we run:
+
+sudo zpool create new-pool mirror /dev/sdb /dev/sdc
+
+zpool status
+
+zpool destroy new-pool
+
+
+
+*
+
+zpool offline datapool c1t0d0
+
+
+zpool detach datapool c2t1d0
+
+zpool online datapool c1t0d0
+
+Якщо ви фізично замінюєте пристрій іншим пристроєм у тому самому місці у резервному пулі, вам потрібно ідентифікувати лише замінений пристрій. ZFS визнає, що це інший диск в одному місці. У наведеному нижче прикладі ви замінюєте диск c1t1d0 у пулі з назвою datapool.
+
+zpool replace datapool c1t1d0
+
+
+Якщо ви замінюєте пристрій у пулі пам’яті на диск у іншому місці, потрібно вказати обидва пристрої. Це показано в наведеному нижче прикладі, коли ви замінюєте диск c1t1d0 у пулі з назвою datapool на диск c1t2d0.
+
+zpool replace hrpool c1t1d0 c1t2d0
+
+https://www.thegeekdiary.com/solaris-zfs-how-to-designate-hot-spares-in-a-storage-pool/
+
+
+
+Для позначення гарячих запасних частин у створеному вами пулі використовуйте zpool create, а потім ім'я пулу, конфігурацію, ключове слово запасні та назви резервних частин. У наведеному нижче прикладі створюється пул з іменем administraol. Усередині цього пулу є дзеркало, яке містить два диски: c2t1d0 c2t2d0. Було призначено дві запчастини, c2t3d0 c2t4d0.
+
+
+zpool create appool mirror c2t1d0 c2t2d0 spare c2t3d0 c2t4d0
+
+
+status appool
+
+        NAME        STATE     READ WRITE CKSUM
+        appool      ONLINE       0     0     0
+          mirror-0  ONLINE       0     0     0
+            c2t1d0  ONLINE       0     0     0
+            c2t2d0  ONLINE       0     0     0
+        spares
+          c2t3d0    AVAIL   
+          c2t4d0    AVAIL  
+          
+          
+Додавання запасних частин до наявного пулу сховищ
+
+Щоб позначити гарячі запасні частини, додавши їх до пулу після створення пулу, скористайтеся командою zpool add, після якої слід назва пулу, ключове слово запасна та назва дисків, які потрібно позначити як гарячі резервні.
+
+
+zpool add appool spare c2t3d0 c2t4d0
+
+Гарячі запчастини в дії
+
+Далі давайте розглянемо приклад, коли один із активних пристроїв у desigol вийшов з ладу, а ZFS автоматично замінив несправний пристрій однією з доступних запасних частин.
+
+
+# zpool status appool
+  pool: appool
+ state: DEGRADED
+ status: One or more devices could not be opened.  Sufficient replicas
+         exist for the pool to continue functioning in a degraded state.
+ action: Attach the missing device and online it using 'zpool online'.
+   see: http://www.sun.com/msg/ZFS-8000-2Q
+ scrub: resilvered completed 0h12m with 0 errors on Tue Dec 13 14:16:0 2017
+  scan: none requested
+config:
+
+        NAME        STATE     READ WRITE CKSUM
+        appool      ONLINE       0     0     0
+          mirror-0  ONLINE       0     0     0
+            c2t1d0  ONLINE       0     0     0
+            c2t2d0  ONLINE       0     0     0
+            spare-1 UNAVAIL      0     0     0
+            c2t2d0  UNAVAIL      0     0     0  cannot open
+            c2t4d0  ONLINE       0     0     0  58.5K resilvered
+
+        spares
+          c2t4d0    INUSE      currently in use   
+          c2t3d0    AVAIL
+Видалення запасних частин у пулі зберігання
+
+Щоб видалити гарячу резервну копію з пулу пам'яті, скористайтеся командою zpool remove, а потім - ім'ям пулу та ім'ям гарячого резерву. У цьому прикладі ви видаляєте гарячу запасну частину c2t3d0 з пулу з іменем administraol, залишаючи лише одну гарячу запасну частину у пулі: c2t4d0.
+
+zpool remove appool c2t3d0
+
+# zpool status appool
+  pool: appool
+ state: ONLINE
+  scan: none requested
+config:
+
+        NAME        STATE     READ WRITE CKSUM
+        appool      ONLINE       0     0     0
+          mirror-0  ONLINE       0     0     0
+            c2t1d0  ONLINE       0     0     0
+            c2t2d0  ONLINE       0     0     0
+        spares
+          c2t4d0    AVAIL   
+
+errors: No known data errors
+
+
+          
+
+
+
+
+
+
+
+
