@@ -1,0 +1,214 @@
+
+============================================
+
+sudo apt install zfsutils-linux
+
+
+sudo zpool create mypool raidz sdb sdc sdd
+
+zpool status mypool
+
+
+sudo wget https://download.mikrotik.com/routeros/6.48.4/chr-6.48.4.vmdk
+sudo wget http://distro.ibiblio.org/puppylinux/puppy-fossa/fossapup64-9.5.iso
+
+cd /mypool
+
+sudo zpool scrub mypool
+
+
+sudo apt install samba
+
+
+sudo zfs set sharesmb=on mypool
+
+zfs get sharesmb 
+
+
+
+sudo nano /etc/samba/smb.conf 
+
+
+
+
+[mypool]
+path = /mypool
+public = yes
+writable = no 
+
+
+systemctl restart smbd
+
+sudo net usershare list
+
+https://blog.iqonda.net/zfs-on-linux-smb-sharing/
+
+============================================
+
+
+
+
+https://blog.denisbondar.com/post/zfs-manual-rus
+
+
+
+************
+sudo apt install zfsutils-linux
+whereis zfs
+
+
+************
+lsblk
+
+sda                         8:0    0   32G  0 disk 
+├─sda1                      8:1    0    1M  0 part 
+├─sda2                      8:2    0    1G  0 part /boot
+└─sda3                      8:3    0   31G  0 part 
+  └─ubuntu--vg-ubuntu--lv 253:0    0   20G  0 lvm  /
+sdb                         8:16   0   10G  0 disk 
+sdc                         8:32   0   10G  0 disk 
+sdd                         8:48   0   10G  0 disk
+
+************
+sudo zpool create pooldata mirror sdb  sdc   spare sdd 
+
+************
+zpool status pooldata
+
+
+s@s:~$ zpool status pooldata
+  pool: pooldata
+ state: ONLINE
+  scan: none requested
+config:
+
+        NAME        STATE     READ WRITE CKSUM
+        pooldata    ONLINE       0     0     0
+          mirror-0  ONLINE       0     0     0
+            sdb     ONLINE       0     0     0
+            sdc     ONLINE       0     0     0
+        spares
+          sdd       AVAIL   
+
+errors: No known data errors
+
+
+************
+
+cd /pooldata
+s@s:/pooldata$ ll
+total 5
+drwxr-xr-x  2 root root    2 Aug 24 09:30 ./
+drwxr-xr-x 21 root root 4096 Aug 24 09:30 ../
+
+sudo zpool scrub pooldata
+
+sudo wget https://download.mikrotik.com/routeros/6.48.4/chr-6.48.4.vmdk
+sudo wget http://distro.ibiblio.org/puppylinux/puppy-fossa/fossapup64-9.5.iso
+
+s@s:/pooldata$ ll
+total 454179
+drwxr-xr-x  2 root root         4 Aug 24 09:52 ./
+drwxr-xr-x 21 root root      4096 Aug 24 09:30 ../
+-rw-r--r--  1 root root  35913728 Aug 23 14:07 chr-6.48.4.vmdk
+-rw-r--r--  1 root root 428867584 Sep 17  2020 fossapup64-9.5.iso
+
+
+
+
+
+************************
+
+zpool scrub pooldata
+
+
+
+s@s:/pooldata$ zpool status pooldata
+  pool: pooldata
+ state: ONLINE
+  scan: scrub in progress since Tue Aug 24 09:57:50 2021
+        444M scanned at 73.9M/s, 188M issued at 31.4M/s, 444M total
+        0B repaired, 42.46% done, 0 days 00:00:08 to go
+config:
+
+        NAME        STATE     READ WRITE CKSUM
+        pooldata    ONLINE       0     0     0
+          mirror-0  ONLINE       0     0     0
+            sdb     ONLINE       0     0     0
+            sdc     ONLINE       0     0     0
+        spares
+          sdd       AVAIL   
+
+errors: No known data errors
+
+***********************
+sudo zpool detach pooldata sdc 
+
+
+zpool status pooldata
+  pool: pooldata
+ state: ONLINE
+  scan: scrub repaired 0B in 0 days 00:00:14 with 0 errors on Tue Aug 24 09:58:04 2021
+config:
+
+        NAME        STATE     READ WRITE CKSUM
+        pooldata    ONLINE       0     0     0
+          sdb       ONLINE       0     0     0
+        spares
+          sdd       AVAIL   
+
+errors: No known data errors
+
+zpool offline datapool pooldata
+
+
+
+
+
+
+
+
+
+
+
+
+
+sudo zpool destroy mypool
+
+zfs set sharesmb=on /pooldata
+
+zfs set share.smb=on pooldata/dataset
+
+
+zpool status rpool
+zpool scrub myzfs
+zpool create pooldata mirror sdd sde spare sdf sdg
+zpool detach rpool /dev/disk/by-id/ata-VBOX_HARDDISK_VB06e95e61-403d7e2b-part3
+zpool attach rpool /dev/disk/by-id/ata-VBOX_HARDDISK_VBfb65757e-ea936e4d-part3 /dev/disk/by-id/ata-VBOX_HARDDISK_VB9b8d476a-b387a510-part3
+zpool offline datapool c1t0d0
+zpool detach datapool c2t1d0
+zpool online datapool c1t0d0
+Якщо ви фізично замінюєте пристрій іншим пристроєм у тому самому місці у резервному пулі, вам потрібно ідентифікувати лише замінений пристрій. ZFS визнає, що це інший диск в одному місці. У наведеному нижче прикладі ви замінюєте диск c1t1d0 у пулі з назвою datapool.
+
+zpool replace datapool c1t1d
+
+
+
+Чтобы сделать файловую систему доступной по протоколу NFS, достаточно выполнить одну команду. Причем после перезагрузки сервера доступ к файловой системе утерян не будет.
+
+# zfs set sharenfs=on myzfs/colin2
+# zfs get sharenfs myzfs/colin2 
+
+NAME           PROPERTY  VALUE     SOURCE
+myzfs/colin2   sharenfs  on        local
+
+
+
+# zfs set sharesmb=on myzfs/colin2
+# zfs get sharesmb myzfs/colin2
+
+NAME           PROPERTY  VALUE     SOURCE
+myzfs/colin2   sharesmb  on        local
+
+
+
