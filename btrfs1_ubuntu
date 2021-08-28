@@ -1,0 +1,38 @@
+
+
+
+
+lsblk
+sudo mkfs.btrfs /dev/sdb
+sudo mkdir /btrfs
+sudo mount /dev/sdb /btrfs
+cd /btrfs
+sudo touch 1 2 3 4 5 6 7 8
+sudo wget https://download.mikrotik.com/routeros/6.48.4/chr-6.48.4.vhdx
+sudo touch 10 20 30 40
+sudo btrfs device scan
+
+ll
+nano 1 privet
+
+sudo reboot
+cd /btrfs
+ll
+
+
+
+
+
+
+sudo mount /dev/sdb /btrfs
+mount | grep sdb
+/dev/sdb on /btrfs type btrfs (rw,relatime,space_cache,subvolid=5,subvol=/)
+
+
+
+
+sudo mount -t btrfs  /dev/sdc /btrfs
+cd /btrfs
+ll
+
+
