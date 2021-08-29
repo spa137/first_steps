@@ -1,0 +1,224 @@
+https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices
+то же стартовое состояние + диски
+lsblk
+
+Создадим. Зеркало для метаданных. Данные линейно.
+# Create a filesystem across four drives (metadata mirrored, linear data allocation)
+-f стереть с дисков информацию
+sudo mkfs.btrfs -f -d single /dev/sdb /dev/sdc 
+
+sudo mkfs.btrfs -f -d single /dev/sdb /dev/sdc
+[sudo] password for s: 
+btrfs-progs v5.10.1 
+See http://btrfs.wiki.kernel.org for more information.
+
+Label:              (null)
+UUID:               4996a050-2df9-496c-9f12-bcf9f4b4411f
+Node size:          16384
+Sector size:        4096
+Filesystem size:    20.00GiB
+Block group profiles:
+  Data:             single            8.00MiB
+  Metadata:         RAID1           256.00MiB
+  System:           RAID1             8.00MiB
+SSD detected:       no
+Incompat features:  extref, skinny-metadata
+Runtime features:   
+Checksum:           crc32c
+Number of devices:  2
+Devices:
+   ID        SIZE  PATH
+    1    10.00GiB  /dev/sdb
+    2    10.00GiB  /dev/sdc
+
+
+
+---------------------------------------------------------------------------
+
+
+
+sudo mkdir /btrfs
+
+монтируются оба устройства
+sudo mount /dev/sdb /btrfs
+
+df -h
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs           198M  1,1M  197M   1% /run
+/dev/sda1        32G  7,1G   25G  23% /
+tmpfs           990M     0  990M   0% /dev/shm
+tmpfs           5,0M     0  5,0M   0% /run/lock
+tmpfs           4,0M     0  4,0M   0% /sys/fs/cgroup
+/dev/sda1        32G  7,1G   25G  23% /swap
+/dev/sda1        32G  7,1G   25G  23% /home
+tmpfs           198M   76K  198M   1% /run/user/1000
+/dev/sr0        1,9G  1,9G     0 100% /media/s/Lubuntu 21.04 amd64
+
+
+
+
+
+
+cd /btrfs
+
+sudo nano 1 privet
+
+sudo wget https://download.mikrotik.com/routeros/6.48.4/chr-6.48.4.vhdx
+
+-----------------------------------------
+sudo btrfs filesystem show /dev/sdb
+sudo btrfs filesystem show
+
+
+
+s@s-standardpci440fxpiix1996:/btrfs$ sudo btrfs filesystem show 
+Label: none  uuid: b7257b96-d1a2-4554-9889-ceb9a7b5a482
+        Total devices 1 FS bytes used 6.73GiB
+        devid    1 size 32.00GiB used 8.02GiB path /dev/sda1
+
+Label: none  uuid: 4996a050-2df9-496c-9f12-bcf9f4b4411f
+        Total devices 2 FS bytes used 48.51MiB
+        devid    1 size 10.00GiB used 272.00MiB path /dev/sdb
+        devid    2 size 10.00GiB used 1.26GiB path /dev/sdc
+
+Label: none  uuid: de6439c5-ed25-4625-b4d4-4aad56b31117
+        Total devices 2 FS bytes used 128.00KiB
+        devid    1 size 10.00GiB used 1.26GiB path /dev/sdf
+        devid    2 size 10.00GiB used 1.26GiB path /dev/sde
+
+
+
+df -h
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs           198M  1,1M  197M   1% /run
+/dev/sda1        32G  7,1G   25G  23% /
+tmpfs           990M     0  990M   0% /dev/shm
+tmpfs           5,0M     0  5,0M   0% /run/lock
+tmpfs           4,0M     0  4,0M   0% /sys/fs/cgroup
+/dev/sda1        32G  7,1G   25G  23% /swap
+/dev/sda1        32G  7,1G   25G  23% /home
+tmpfs           198M   76K  198M   1% /run/user/1000
+/dev/sr0        1,9G  1,9G     0 100% /media/s/Lubuntu 21.04 amd64
+/dev/sdb         20G   52M   20G   1% /btrfs
+------------------------------------------------------------------------
+Добавим диск
+
+
+sudo btrfs device add /dev/sdd /btrfs
+
+
+df -h
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs           198M  1,1M  197M   1% /run
+/dev/sda1        32G  7,1G   25G  23% /
+tmpfs           990M     0  990M   0% /dev/shm
+tmpfs           5,0M     0  5,0M   0% /run/lock
+tmpfs           4,0M     0  4,0M   0% /sys/fs/cgroup
+/dev/sda1        32G  7,1G   25G  23% /swap
+/dev/sda1        32G  7,1G   25G  23% /home
+tmpfs           198M   76K  198M   1% /run/user/1000
+/dev/sr0        1,9G  1,9G     0 100% /media/s/Lubuntu 21.04 amd64
+/dev/sdb         30G   52M   30G   1% /btrfs
+
+
+----------------------------------------------------
+sudo btrfs filesystem show 
+Label: none  uuid: b7257b96-d1a2-4554-9889-ceb9a7b5a482
+        Total devices 1 FS bytes used 6.73GiB
+        devid    1 size 32.00GiB used 8.02GiB path /dev/sda1
+
+Label: none  uuid: 4996a050-2df9-496c-9f12-bcf9f4b4411f
+        Total devices 3 FS bytes used 48.51MiB
+        devid    1 size 10.00GiB used 272.00MiB path /dev/sdb
+        devid    2 size 10.00GiB used 1.26GiB path /dev/sdc
+        devid    3 size 10.00GiB used 0.00B path /dev/sdd
+
+Label: none  uuid: de6439c5-ed25-4625-b4d4-4aad56b31117
+        Total devices 2 FS bytes used 128.00KiB
+        devid    1 size 10.00GiB used 1.26GiB path /dev/sdf
+        devid    2 size 10.00GiB used 1.26GiB path /dev/sde
+
+
+
+
+-----------------------------------------------------------
+sudo btrfs balance start /btrfs
+
+
+WARNING:
+
+        Full balance without filters requested. This operation is very
+        intense and takes potentially very long. It is recommended to
+        use the balance filters to narrow down the scope of balance.
+        Use 'btrfs balance start --full-balance' option to skip this
+        warning. The operation will start in 10 seconds.
+        Use Ctrl-C to stop it.
+10 9 8 7 6 5 4 3 2 1
+Starting balance without any filters.
+Done, had to relocate 4 out of 4 chunks
+
+------------------------------------------------------------------------
+s@s-standardpci440fxpiix1996:/btrfs$ sudo btrfs filesystem show 
+Label: none  uuid: b7257b96-d1a2-4554-9889-ceb9a7b5a482
+        Total devices 1 FS bytes used 6.73GiB
+        devid    1 size 32.00GiB used 8.02GiB path /dev/sda1
+
+Label: none  uuid: 4996a050-2df9-496c-9f12-bcf9f4b4411f
+        Total devices 3 FS bytes used 48.51MiB
+        devid    1 size 10.00GiB used 288.00MiB path /dev/sdb
+        devid    2 size 10.00GiB used 288.00MiB path /dev/sdc
+        devid    3 size 10.00GiB used 1.00GiB path /dev/sdd
+
+Label: none  uuid: de6439c5-ed25-4625-b4d4-4aad56b31117
+        Total devices 2 FS bytes used 128.00KiB
+        devid    1 size 10.00GiB used 1.26GiB path /dev/sdf
+        devid    2 size 10.00GiB used 1.26GiB path /dev/sde
+
+
+
+
+----------------------------------------------------
+
+Убрать sdb
+
+sudo btrfs device delete /dev/sdb /btrfs
+
+df -h
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs           198M  1,1M  197M   1% /run
+/dev/sda1        32G  7,1G   25G  23% /
+tmpfs           990M     0  990M   0% /dev/shm
+tmpfs           5,0M     0  5,0M   0% /run/lock
+tmpfs           4,0M     0  4,0M   0% /sys/fs/cgroup
+/dev/sda1        32G  7,1G   25G  23% /swap
+/dev/sda1        32G  7,1G   25G  23% /home
+tmpfs           198M   76K  198M   1% /run/user/1000
+/dev/sr0        1,9G  1,9G     0 100% /media/s/Lubuntu 21.04 amd64
+/dev/sdc         20G   52M   20G   1% /btrfs
+
+s@s-standardpci440fxpiix1996:/btrfs$ ll
+total 49172
+drwxr-xr-x 1 root root       32 сер 29 08:18 ./
+drwxr-xr-x 1 root root      180 сер 29 08:16 ../
+-rw-r--r-- 1 root root        7 сер 29 08:18 1
+-rw-r--r-- 1 root root 50331648 сер 23 17:07 chr-6.48.4.vhdx
+s@s-standardpci440fxpiix1996:/btrfs$ cat 1
+privet
+s@s-standardpci440fxpiix1996:/btrfs$ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sudo mount -o degraded /dev/sda3 /mnt
+
+
