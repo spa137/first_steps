@@ -1,23 +1,23 @@
 https://linuxhint.com/use-btrfs-snapshots/
 
-Создадим btrfs раздел с меткой data
 
 
-sudo mkfs.btrfs -L data /dev/sdb
+sudo mkfs.btrfs -f /dev/sdb
 
 
 
 sudo mkdir /btrfs
 
-монтируются оба устройства
-sudo mount data /btrfs
+
+sudo mount /dev/sdb /btrfs
 
 
 df -h /btrfs
 
-У Btrfs можна робити знімки лише підтомів Btrfs.
+
 
 sudo mkdir -v /btrfs/files
+
 sudo btrfs subvolume create /btrfs/files/v1
 
 sudo nano /btrfs/files/v1/1              hi1
@@ -28,19 +28,31 @@ sudo mkdir -v /btrfs/.snapshots
 sudo btrfs subvolume snapshot /btrfs/files/v1 /btrfs/.snapshots/n1s
 
 sudo btrfs subvolume list /btrfs
-sudo btrfs subvolume show /data/.snapshots/n1s
+
 (sudo btrfs subvolume snapshot -r  только чтение)
 tree -a /btrfs
 
 sudo nano /btrfs/files/v1/1      privet2
 cat /btrfs/files/v1/1
-cat /btrfs/.snapshots/n1s
+cat /btrfs/.snapshots/n1s/1
 
+sudo btrfs subvolume snapshot /btrfs/files/v1 /btrfs/.snapshots/n2s
+
+cat /btrfs/.snapshots/n2s/1
+
+sudo btrfs subvolume delete /btrfs/.snapshots/n1s
 
 sudo btrfs subvolume list /btrfs
 
+-----------------------------------------------
 
-sudo btrfs subvolume delete /btrfs/.snapshots/n1s
+sudo btrfs subvolume set-default 259 /btrfs
+umount /btrfs
+mount /dev/sdb /btrfs
+
+
+
+
 
 
  
@@ -99,7 +111,6 @@ ID 259 gen 9 top level 257 path data/backup
 
 
 sudo btrfs subvolume set-default 258 /btrfs
-
 umount /btrfs
 mount /dev/sdb /btrfs
 
