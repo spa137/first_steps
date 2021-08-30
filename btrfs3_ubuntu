@@ -1,0 +1,112 @@
+https://linuxhint.com/use-btrfs-snapshots/
+
+Создадим btrfs раздел с меткой data
+
+
+sudo mkfs.btrfs -L data /dev/sdb
+
+
+
+sudo mkdir /btrfs
+
+монтируются оба устройства
+sudo mount data /btrfs
+
+
+df -h /btrfs
+
+У Btrfs можна робити знімки лише підтомів Btrfs.
+
+sudo mkdir -v /btrfs/files
+sudo btrfs subvolume create /btrfs/files/v1
+
+sudo nano /btrfs/files/v1/1              hi1
+cat /btrfs/files/v1/1
+
+sudo mkdir -v /btrfs/.snapshots
+
+sudo btrfs subvolume snapshot /btrfs/files/v1 /btrfs/.snapshots/n1s
+
+sudo btrfs subvolume list /btrfs
+sudo btrfs subvolume show /data/.snapshots/n1s
+(sudo btrfs subvolume snapshot -r  только чтение)
+tree -a /btrfs
+
+sudo nano /btrfs/files/v1/1      privet2
+cat /btrfs/files/v1/1
+cat /btrfs/.snapshots/n1s
+
+
+sudo btrfs subvolume list /btrfs
+
+
+sudo btrfs subvolume delete /btrfs/.snapshots/n1s
+
+
+ 
+Знімки для запису: якщо ви зробите запис для запису, ви можете змінити файли/каталоги цього знімка пізніше. Це тип знімка за умовчанням для файлової системи Btrfs.
+Знімки лише для читання. Якщо ви зробите знімок лише для читання, пізніше ви не зможете змінити файли/каталоги цього знімка.
+
+
+
+
+
+
+
+
+
+
+
+
+просто переключаетесь на другой подраздел 
+btrfs subvolume set-default ID
+Мы установим вид по умолчанию на другой подраздел, затем отмонтируем устройство, и смонтируем его заново
+
+sudo nano 1
+cat 1
+
+
+
+
+
+
+http://rus-linux.net/MyLDP/file-sys/btrfs-snapshots.html
+
+
+
+sudo btrfs subvolume create /btrfs/data
+sudo btrfs subvolume create /btrfs/data/main
+
+
+cd /btrfs
+
+sudo nano 1 privet1
+
+sudo btrfs subvolume snapshot /btrfs/data/main /data/backup
+
+
+btrfs subvolume list /btrfs
+
+
+
+sudo btrfs subvolume list /btrfs
+ID 257 gen 9 top level 5 path data
+ID 258 gen 9 top level 257 path data/main
+ID 259 gen 9 top level 257 path data/backup
+
+
+
+
+
+sudo btrfs subvolume set-default 258 /btrfs
+
+umount /btrfs
+mount /dev/sdb /btrfs
+
+
+
+btrfs subvolume set-default 257 /btrfs
+
+umount /btrfs
+mount /dev/sdb1 /btrfs
+
