@@ -1,0 +1,224 @@
+
+
+
+замена
+Using btrfs replace
+https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices#Using_btrfs_replace
+
+
+s@s-standardpci440fxpiix1996:~$ lsblk
+NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda      8:0    0   32G  0 disk 
+└─sda1   8:1    0   32G  0 part /home
+sdb      8:16   0   10G  0 disk 
+sdc      8:32   0   10G  0 disk 
+sdd      8:48   0   10G  0 disk 
+sde      8:64   0   10G  0 disk 
+sdf      8:80   0   10G  0 disk 
+sr0     11:0    1  1,9G  0 rom  
+
+
+
+sudo mkfs.btrfs -f /dev/sdb /dev/sdc
+
+sudo mkdir /btrfs
+
+sudo mount /dev/sdb /btrfs
+
+cd /btrfs
+nano 1    privet1
+
+
+df -h /btrfs
+
+df -h /btrfs
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sdb         20G  3,5M   20G   1% /btrfs
+
+
+sudo btrfs balance start -dconvert=raid1 -mconvert=raid1 /btrfs
+
+df -h /btrfs
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sdb         10G  3,7M  9,8G   1% /btrfs
+
+
+sudo btrfs filesystem show
+
+
+s@s-standardpci440fxpiix1996:~$ sudo btrfs filesystem show
+Label: none  uuid: b7257b96-d1a2-4554-9889-ceb9a7b5a482
+        Total devices 1 FS bytes used 6.72GiB
+        devid    1 size 32.00GiB used 8.02GiB path /dev/sda1
+
+Label: none  uuid: 14bb8173-43e9-471c-974e-41d85a2953e5
+        Total devices 2 FS bytes used 448.00KiB
+        devid    1 size 10.00GiB used 2.28GiB path /dev/sdb
+        devid    2 size 10.00GiB used 2.28GiB path /dev/sdc
+
+
+
+sudo btrfs replace start 2 /dev/sde /btrfs
+
+sudo btrfs filesystem show
+
+Label: none  uuid: b7257b96-d1a2-4554-9889-ceb9a7b5a482
+        Total devices 1 FS bytes used 6.72GiB
+        devid    1 size 32.00GiB used 8.02GiB path /dev/sda1
+
+Label: none  uuid: 14bb8173-43e9-471c-974e-41d85a2953e5
+        Total devices 2 FS bytes used 464.00KiB
+        devid    1 size 10.00GiB used 1.31GiB path /dev/sdb
+        devid    2 size 10.00GiB used 1.31GiB path /dev/sde
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+btrfs device scan
+btrfs device add /dev/sdc /mnt
+btrfs balance start /mnt
+btrfs balance start -dconvert=raid1 -mconvert=raid1 /mnt
+
+
+
+
+btrfs check (btrfsck устарела)
+
+
+
+https://linuxhint.com/use-btrfs-snapshots/
+
+
+
+sudo mkfs.btrfs -f /dev/sdb
+
+
+
+sudo mkdir /btrfs
+
+
+sudo mount /dev/sdb /btrfs
+
+
+df -h /btrfs
+
+
+
+sudo mkdir -v /btrfs/files
+
+sudo btrfs subvolume create /btrfs/files/v1
+
+sudo nano /btrfs/files/v1/1              hi1
+cat /btrfs/files/v1/1
+
+sudo mkdir -v /btrfs/.snapshots
+
+sudo btrfs subvolume snapshot /btrfs/files/v1 /btrfs/.snapshots/n1s
+
+sudo btrfs subvolume list /btrfs
+
+(sudo btrfs subvolume snapshot -r  только чтение)
+tree -a /btrfs
+
+sudo nano /btrfs/files/v1/1      privet2
+cat /btrfs/files/v1/1
+cat /btrfs/.snapshots/n1s/1
+
+sudo btrfs subvolume snapshot /btrfs/files/v1 /btrfs/.snapshots/n2s
+
+cat /btrfs/.snapshots/n2s/1
+
+sudo btrfs subvolume delete /btrfs/.snapshots/n1s
+
+sudo btrfs subvolume list /btrfs
+
+-----------------------------------------------
+
+sudo btrfs subvolume set-default 259 /btrfs
+umount /btrfs
+mount /dev/sdb /btrfs
+
+
+
+
+
+
+ 
+Знімки для запису: якщо ви зробите запис для запису, ви можете змінити файли/каталоги цього знімка пізніше. Це тип знімка за умовчанням для файлової системи Btrfs.
+Знімки лише для читання. Якщо ви зробите знімок лише для читання, пізніше ви не зможете змінити файли/каталоги цього знімка.
+
+
+
+
+
+
+
+
+
+
+
+
+просто переключаетесь на другой подраздел 
+btrfs subvolume set-default ID
+Мы установим вид по умолчанию на другой подраздел, затем отмонтируем устройство, и смонтируем его заново
+
+sudo nano 1
+cat 1
+
+
+
+
+
+
+http://rus-linux.net/MyLDP/file-sys/btrfs-snapshots.html
+
+
+
+sudo btrfs subvolume create /btrfs/data
+sudo btrfs subvolume create /btrfs/data/main
+
+
+cd /btrfs
+
+sudo nano 1 privet1
+
+sudo btrfs subvolume snapshot /btrfs/data/main /data/backup
+
+
+btrfs subvolume list /btrfs
+
+
+
+sudo btrfs subvolume list /btrfs
+ID 257 gen 9 top level 5 path data
+ID 258 gen 9 top level 257 path data/main
+ID 259 gen 9 top level 257 path data/backup
+
+
+
+
+
+sudo btrfs subvolume set-default 258 /btrfs
+umount /btrfs
+mount /dev/sdb /btrfs
+
+
+
+btrfs subvolume set-default 257 /btrfs
+
+umount /btrfs
+mount /dev/sdb1 /btrfs
+
