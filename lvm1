@@ -1,0 +1,168 @@
+Logical Volume Manager (LVM)
+
+s@s:~$ lsblk
+NAME                      MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+
+sdb                         8:16   0   10G  0 disk 
+sdc                         8:32   0   10G  0 disk 
+sdd                         8:48   0   10G  0 disk 
+sde                         8:64   0   10G  0 disk 
+sdf                         8:80   0   10G  0 disk 
+sdg                         8:96   0   10G  0 disk 
+sdh                         8:112  0   10G  0 disk 
+sr0                        11:0    1  1.1G  0 rom  
+
+
+sudo pvscan
+
+sudo pvdisplay
+
+
+s@s:~$ sudo pvscan
+[sudo] password for s: 
+  PV /dev/sda3   VG ubuntu-vg       lvm2 [<31.00 GiB / <11.00 GiB free]
+  Total: 1 [<31.00 GiB] / in use: 1 [<31.00 GiB] / in no VG: 0 [0   ]
+s@s:~$ sudo pvdisplay
+  --- Physical volume ---
+  PV Name               /dev/sda3
+  VG Name               ubuntu-vg
+  PV Size               <31.00 GiB / not usable 0   
+  Allocatable           yes 
+  PE Size               4.00 MiB
+  Total PE              7935
+  Free PE               2815
+  Allocated PE          5120
+  PV UUID               l953Ok-tmEF-k4uL-2dA2-XtfL-Eqzf-jthhCt
+
+
+
+Создали группу томов vol1
+
+sudo vgcreate vol1 /dev/sdb /dev/sdc
+  Physical volume "/dev/sdb" successfully created.
+  Physical volume "/dev/sdc" successfully created.
+  Volume group "vol1" successfully created
+
+sudo pvscan
+
+sudo pvscan
+  PV /dev/sdb    VG vol1            lvm2 [<10.00 GiB / <10.00 GiB free]
+  PV /dev/sdc    VG vol1            lvm2 [<10.00 GiB / <10.00 GiB free]
+  PV /dev/sda3   VG ubuntu-vg       lvm2 [<31.00 GiB / <11.00 GiB free]
+  Total: 3 [<50.99 GiB] / in use: 3 [<50.99 GiB] / in no VG: 0 [0   ]
+  
+
+sudo pvdisplay
+
+sudo pvdisplay
+  --- Physical volume ---
+  PV Name               /dev/sdb
+  VG Name               vol1
+  PV Size               10.00 GiB / not usable 4.00 MiB
+  Allocatable           yes 
+  PE Size               4.00 MiB
+  Total PE              2559
+  Free PE               2559
+  Allocated PE          0
+  PV UUID               HrWKwD-ZihD-jeRK-Wc4w-8l06-DqOX-Z11QRh
+   
+  --- Physical volume ---
+  PV Name               /dev/sdc
+  VG Name               vol1
+  PV Size               10.00 GiB / not usable 4.00 MiB
+  Allocatable           yes 
+  PE Size               4.00 MiB
+  Total PE              2559
+  Free PE               2559
+  Allocated PE          0
+  PV UUID               1X0Tja-SJQy-JHhs-20LA-86XV-WtxP-dcbkCO
+   
+  --- Physical volume ---
+  PV Name               /dev/sda3
+  VG Name               ubuntu-vg
+  PV Size               <31.00 GiB / not usable 0   
+  Allocatable           yes 
+  PE Size               4.00 MiB
+  Total PE              7935
+  Free PE               2815
+  Allocated PE          5120
+  PV UUID               l953Ok-tmEF-k4uL-2dA2-XtfL-Eqzf-jthhCt
+
+логические тома lv1 и lv2 
+
+sudo lvcreate -n lv1 -L 1G vol1
+sudo lvcreate -n lv2 -L 7G vol1
+
+sudo lvcreate -n lv1 -L 1G vol1
+  Logical volume "lv1" created.
+  
+sudo lvcreate -n lv2 -L 7G vol1
+  Logical volume "lv2" created.
+
+
+sudo lvdisplay
+
+блочные устройства /dev/vol1/lv1 и /dev/vol1/lv2
+
+
+sudo mkfs.ext4  /dev/vol1/lv1
+
+sudo mkfs.ext4  /dev/vol1/lv2
+
+
+sudo mount /dev/vol1/lv2 /mnt
+
+cd /mnt
+sudo nano 1                 hi
+
+
+df -h
+Filesystem                         Size  Used Avail Use% Mounted on
+
+/dev/mapper/vol1-lv2               6.9G   32M  6.5G   1% /mnt
+
+
+
+
+sudo pvcreate /dev/sde
+
+
+sudo vgextend vol1 /dev/sde
+
+  Volume group "vol1" successfully extended
+
+
+sudo lvresize -L 16G vol1/lv2
+
+  Size of logical volume vol1/lv2 changed from 7.00 GiB (1792 extents) to 16.00 GiB (4096 extents).
+  Logical volume vol1/lv2 successfully resized
+
+sudo resize2fs /dev/vol1/lv2
+resize2fs 1.45.5 (07-Jan-2020)
+Filesystem at /dev/vol1/lv2 is mounted on /mnt; on-line resizing required
+old_desc_blocks = 1, new_desc_blocks = 2
+The filesystem on /dev/vol1/lv2 is now 4194304 (4k) blocks long.
+
+
+
+
+s@s:/$ df -h
+Filesystem                         Size  Used Avail Use% Mounted on
+/dev/mapper/vol1-lv2                16G   39M   15G   1% /mnt
+
+
+
+
+cat 1
+
+
+
+
+
+
+sudo umount /dev/vol1/lv2
+
+
+
+https://losst.ru/sozdanie-i-nastrojka-lvm-linux
+
