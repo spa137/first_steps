@@ -35,7 +35,9 @@ cd /mnt
 
 sudo nano 1 hi
 
-sudo lvcreate --size 1G --snapshot --name snap1 /dev/vol1/lv1
+sudo wget https://download.mikrotik.com/routeros/6.48.4/chr-6.48.4.vmdk
+
+sudo lvcreate --size 200M --snapshot --name snap1 /dev/vol1/lv1
   Logical volume "snap1" created.
 
 s@s:/mnt$ sudo lvs
@@ -70,7 +72,7 @@ lrwxrwxrwx  1 root root    7 Sep  4 12:19 lv1 -> ../dm-1
 lrwxrwxrwx  1 root root    7 Sep  4 12:19 snap1 -> ../dm-4
 lrwxrwxrwx  1 root root    7 Sep  4 12:19 snap2 -> ../dm-6
 
-sudo mkdir /snap2
+sudo mkdir /snap1
   
 Монтировать снапшот по чтению
 sudo mount -o ro /dev/vol1/snap1  /snap1
