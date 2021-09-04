@@ -51,7 +51,7 @@ s@s:/mnt$ sudo lvcreate --size 340M --snapshot --name snap2 /dev/vol1/lv1
 
 
 
-s@s:/mnt$ sudo lvs
+sudo lvs
   LV        VG        Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
   ubuntu-lv ubuntu-vg -wi-ao----  20.00g                                                    
   lv1       vol1      owi-aos---   1.00g                                                    
@@ -61,7 +61,7 @@ s@s:/mnt$ sudo lvs
 cd /dev/vol1/
 
 
-s@s:/mnt$ cd /dev/vol1/
+cd /dev/vol1/
 s@s:/dev/vol1$ ll
 total 0
 drwxr-xr-x  2 root root  100 Sep  4 12:19 ./
@@ -77,155 +77,5 @@ sudo mount -o ro /dev/vol1/snap1  /snap1
 
 
 копировать
-
-
-
-https://manpages.ylsoftware.com/ru/lvconvert.8.html
-
-
-
-sudo pvscan
-
-sudo pvdisplay
-
-
-
-
-sudo pvscan
-
-
-sudo pvdisplay
-
-
-
-логические тома lv1 и lv2 
-
-
-sudo lvcreate -n lv1 -L 1G vol1
-sudo lvcreate -n lv2 -L 1G vol1
-
-
---------------------------------
-
-
-sudo lvs
-
-
-
-sudo lvdisplay
-
-блочные устройства /dev/vol1/lv1 и /dev/vol1/lv2
-
-
-sudo mkfs.ext4  /dev/vol1/lv1
-
-sudo mkfs.ext4  /dev/vol1/lv2
-
-
-sudo mount /dev/vol1/lv2 /mnt
-
-cd /mnt
-sudo nano 1                 hi
-
-
-df -h
-Filesystem                         Size  Used Avail Use% Mounted on
-
-/dev/mapper/vol1-lv2               6.9G   32M  6.5G   1% /mnt
-
-
-
-
-sudo pvcreate /dev/sde
-
-
-sudo vgextend vol1 /dev/sde
-
-  Volume group "vol1" successfully extended
-
-
-sudo lvresize -L 16G vol1/lv2
-
-  Size of logical volume vol1/lv2 changed from 7.00 GiB (1792 extents) to 16.00 GiB (4096 extents).
-  Logical volume vol1/lv2 successfully resized
-
-sudo resize2fs /dev/vol1/lv2
-resize2fs 1.45.5 (07-Jan-2020)
-Filesystem at /dev/vol1/lv2 is mounted on /mnt; on-line resizing required
-old_desc_blocks = 1, new_desc_blocks = 2
-The filesystem on /dev/vol1/lv2 is now 4194304 (4k) blocks long.
-
-
-
-
-s@s:/$ df -h
-Filesystem                         Size  Used Avail Use% Mounted on
-/dev/mapper/vol1-lv2                16G   39M   15G   1% /mnt
-
-
-
-
-cat 1
-
-
-
-
-
-
-sudo umount /dev/vol1/lv2
-
-
-
-https://losst.ru/sozdanie-i-nastrojka-lvm-linux
-
-
-
-
-
-
-
-Logical Volume Manager (LVM)
-
-
-
-
-
-sudo lvcreate -L 200M -m1 -n lv_mirror vol_grp1
-
-
-
-
-
-snapshot
-https://jnotes.ru/create-lvm-snapshot-and-restore.html
-
-lvs
-
-lvcreate --size 1G --snapshot --name log_snap /dev/vg_ds00/log
-
-
-
-Для восстановления нужно отмонтировать логический том (в моем случае выключить виртуальную машину) и выполнить:
-
-lvconvert --merge /dev/vg_ds00/log_snap
-
-
-
-После этого логический том вернется в исходное состояние, а snapshot будет удален
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
