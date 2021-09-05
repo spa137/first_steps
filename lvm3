@@ -1,0 +1,185 @@
+https://access.redhat.com/documentation/ru-ru/red_hat_enterprise_linux/6/html/logical_volume_manager_administration/mirror_create
+
+Создали группу томов vol1
+
+sudo vgcreate vol1 /dev/sdb /dev/sdc
+
+sudo lvcreate -L 9.95G -m1 -n mirrorlv vol1 /dev/sdc /dev/sdb
+  Rounding up size to full physical extent 9.95 GiB
+  Logical volume "mirrorlv" created.
+
+
+sudo lvs
+[sudo] password for s: 
+  LV        VG        Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  ubuntu-lv ubuntu-vg -wi-ao---- 20.00g                                                    
+  mirrorlv  vol1      rwi-a-r---  9.95g      
+    
+lsblk
+
+
+sudo mkfs.ext4 /dev/vol1/mirrorlv
+
+
+При этом журнал зеркала расположен на том же устройстве, что и составляющая зеркала
+
+
+
+sudo mount /dev/vol1/mirrorlv /mnt
+
+cd /mnt
+
+sudo nano 1 hi
+
+sudo wget https://download.mikrotik.com/routeros/6.48.4/chr-6.48.4.vmdk
+sudo wget https://download.mikrotik.com/routeros/6.48.4/all_packages-arm64-6.48.4.zip
+sudo wget https://download.mikrotik.com/routeros/6.47.10/all_packages-mipsbe-6.47.10.zip
+
+Имитируем сбой
+
+Отключить диск 2 sdc
+Отключить диск 3 sdb
+
+cat /mnt/1
+
+sudo lvs
+
+
+
+https://access.redhat.com/documentation/ru-ru/red_hat_enterprise_linux/6/html/logical_volume_manager_administration/mirrorrecover
+
+
+
+6.3. Восстановление после сбоя зеркала
+В этой секции рассматривается пример восстановления после выхода из строя компонента зеркального логического тома как следствие сбоя физического тома в его основе. При этом параметр mirror_log_fault_policy имеет значение remove (см. Раздел 6.3, «Восстановление после сбоя зеркала»).
+LVM преобразует зеркальный том в линейный, сохранив функциональность, но уже без избыточности. После этого можно добавить новое устройство и пересоздать зеркало. 
+
+
+
+
+
+
+Далее приведен пример создания зеркального тома mirrorlv размером 500 МБ с одним зеркалом и одним журналом. Том будет создан в группе vg0. Одна часть зеркала будет располагаться на устройстве /dev/sda1, вторая — на /dev/sdb1, а журнал будет храниться на /dev/sdc1.
+
+lvcreate -L 500M -m1 -n mirrorlv vg0 /dev/sda1 /dev/sdb1 /dev/sdc1
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://access.redhat.com/documentation/ru-ru/red_hat_enterprise_linux/6/html/logical_volume_manager_administration/mirror_create
+
+
+
+
+При создании зеркального тома необходимо указать число копий, для чего служит аргумент -m команды lvcreate. Так, -m1 создаст одно зеркало, то есть в файловой системе будет две копии — линейный логический том и его копия. Аналогичным образом, если указать -m2, будет создано два зеркала (всего три копии).
+Ниже приведен пример создания тома mirrorlv размером 50 гигабайт с одним зеркалом. Пространство будет выделено из группы vg0.
+
+lvcreate -L 10G -m1 -n mirrorlv vol1
+
+
+В силу ограничений кластерной инфраструктуры, размер сегментов зеркала, размер которого превышает 1.5 ТБ, должен быть больше 512 МБ. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sudo lvs
+[sudo] password for s: 
+  LV        VG        Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  ubuntu-lv ubuntu-vg -wi-ao---- 20.00g   
+  
+                                                   
+sudo vgcreate vol1 /dev/sdb /dev/sdc
+  Physical volume "/dev/sdb" successfully created.
+  Physical volume "/dev/sdc" successfully created.
+  Volume group "vol1" successfully created
+
+
+
+sudo lvcreate -n lv1 -L 1G vol1
+
+sudo lvs
+  LV        VG        Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  ubuntu-lv ubuntu-vg -wi-ao---- 20.00g                                                    
+  lv1       vol1      -wi-a-----  1.00g     
+
+
+sudo mkfs.ext4  /dev/vol1/lv1
+
+
+sudo mount /dev/vol1/lv1 /mnt
+
+cd /mnt
+
+sudo nano 1 hi
+
+sudo wget https://download.mikrotik.com/routeros/6.48.4/chr-6.48.4.vmdk
+
+sudo lvcreate --size 200M --snapshot --name snap1 /dev/vol1/lv1
+  Logical volume "snap1" created.
+
+s@s:/mnt$ sudo lvs
+  LV        VG        Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  ubuntu-lv ubuntu-vg -wi-ao---- 20.00g                                                    
+  lv1       vol1      owi-aos---  1.00g                                                    
+  snap1     vol1      swi-a-s---  1.00g      lv1    0.01   
+  
+
+s@s:/mnt$ sudo lvcreate --size 340M --snapshot --name snap2 /dev/vol1/lv1
+  Logical volume "snap2" created.
+
+
+
+
+sudo lvs
+  LV        VG        Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  ubuntu-lv ubuntu-vg -wi-ao----  20.00g                                                    
+  lv1       vol1      owi-aos---   1.00g                                                    
+  snap1     vol1      swi-a-s---   1.00g      lv1    0.01                                   
+  snap2     vol1      swi-a-s--- 340.00m      lv1    0.01  
+
+cd /dev/vol1/
+
+
+cd /dev/vol1/
+s@s:/dev/vol1$ ll
+total 0
+drwxr-xr-x  2 root root  100 Sep  4 12:19 ./
+drwxr-xr-x 21 root root 4320 Sep  4 12:19 ../
+lrwxrwxrwx  1 root root    7 Sep  4 12:19 lv1 -> ../dm-1
+lrwxrwxrwx  1 root root    7 Sep  4 12:19 snap1 -> ../dm-4
+lrwxrwxrwx  1 root root    7 Sep  4 12:19 snap2 -> ../dm-6
+
+sudo mkdir /snap1
+  
+Монтировать снапшот по чтению
+sudo mount -o ro /dev/vol1/snap1  /snap1
+
+
+копировать
+
+
