@@ -1,0 +1,116 @@
+
+
+
+
+lsblk
+
+
+sdb                         8:16   0   10G  0 disk 
+sdc                         8:32   0   10G  0 disk 
+sdd                         8:48   0   10G  0 disk 
+sde                         8:64   0   10G  0 disk 
+sdf                         8:80   0   10G  0 disk 
+sdg                         8:96   0   10G  0 disk 
+sdh                         8:112  0   10G  0 disk 
+
+
+
+
+
+
+
+
+sudo apt install mdadm
+
+sudo mdadm --create --verbose /dev/md0 --level=6 --raid-devices=5 /dev/sdb /dev/sdc /dev/sdd /dev/sde /dev/sdf
+
+sudo mdadm /dev/md0 --add /dev/sdg
+
+sudo mdadm -D /dev/md0
+
+
+    Number   Major   Minor   RaidDevice State
+       0       8       16        0      active sync   /dev/sdb
+       1       8       32        1      active sync   /dev/sdc
+       2       8       48        2      active sync   /dev/sdd
+       3       8       64        3      active sync   /dev/sde
+       4       8       80        4      active sync   /dev/sdf
+
+       5       8       96        -      spare   /dev/sdg
+
+
+
+sudo mkfs.ext4 /dev/md0
+
+sudo mount /dev/md0 /mnt
+
+df -h
+
+cd /mnt
+
+sudo wget https://download.mikrotik.com/routeros/6.47.10/all_packages-smips-6.47.10.zip
+
+убрали диск 4
+
+
+sudo wget https://download.mikrotik.com/routeros/7.1rc2/all_packages-arm64-7.1rc2.zip
+
+
+
+
+sudo mdadm --detail --scan
+
+ARRAY /dev/md0 metadata=1.2 name=s:0 UUID=e05bdbc2:f7a8bed6:4e03c46d:36aa31f9
+
+
+sudo mdadm -E /dev/sdc
+
+
+
+
+/dev/md0                            30G   45M   28G   1% /mnt
+
+
+    Number   Major   Minor   RaidDevice State
+       0       8       16        0      active sync   /dev/sdb
+       1       8       32        1      active sync   /dev/sdc
+       5       8       96        2      spare rebuilding   /dev/sdg
+       3       8       64        3      active sync   /dev/sde
+       4       8       80        4      active sync   /dev/sdf
+
+       2       8       48        -      faulty
+
+
+
+убрали диск 5
+
+
+
+добавили диск 4
+
+sudo mdadm --stop /dev/md0
+sudo mdadm --create --verbose /dev/md0 --level=6 --raid-devices=5 /dev/sdb /dev/sdc /dev/sdd /dev/sde /dev/sdf
+sudo mdadm -D /dev/md0
+
+sudo umount /mnt
+sudo mdadm --stop /dev/md0
+
+
+sudo mdadm --assemble --scan --force
+
+
+
+
+
+
+
+  
+  
+ 
+sudo mdadm --detail --scan
+
+
+sudo mdadm --assemble --scan --force
+
+sudo mdadm -E /dev/sdc[de]
+
