@@ -1,0 +1,48 @@
+https://linux.die.net/man/5/mdadm.conf
+
+
+
+sudo watch cat /proc/mdstat 
+
+sudo watch mdadm -D /dev/md0
+
+
+
+
+
+
+
+sudo mdadm --create --verbose /dev/md0 --level=6 --raid-devices=5 /dev/sdb /dev/sdc /dev/sdd /dev/sde /dev/sdf
+
+
+
+
+
+sudo mkfs.ext4 /dev/md0
+
+sudo mount /dev/md0 /mnt
+
+df -h
+
+cd /mnt
+
+sudo wget https://download.mikrotik.com/routeros/6.47.10/all_packages-smips-6.47.10.zip
+
+
+
+
+
+
+
+sudo mdadm --fail /dev/md0 /dev/sdb
+
+
+sudo mdadm --manage --add /dev/md0 /dev/sdg
+
+
+
+
+cd /mnt
+
+ll
+
