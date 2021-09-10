@@ -1,0 +1,290 @@
+sudo btrfs-find-root /dev/sdb
+
+sudo umount /media/s/6bc5e5c2-fea0-41a1-a12c-736bf5665866
+
+
+sudo btrfs restore -t 30638080 /dev/sdb /home/s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://kompsekret.ru/q/btrfs-undelete-file-50253/
+https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs-find-root
+btrfs check --repair --tree-root <block> --super <sup> 
+
+btrfs check -s 0 /dev/sdb3
+https://btrfs.wiki.kernel.org/index.php/Restore
+
+btrfs restore
+btrfs restore -xmo /dev/sda3 /mnt
+Suppose that your device is /dev/sda1 and you want to restore files to /mnt/restore. If you're really lucky, this might be enough:
+
+# ./btrfs restore /dev/sda1 /mnt/restore
+
+
+
+Superblock thinks the generation is 24
+Superblock thinks the level is 0
+Found tree root at 31096832 gen 24 level 0
+Well block 31064064(gen: 23 level: 0) seems good, but generation/level doesn't match, want gen: 24 level: 0
+Well block 30982144(gen: 22 level: 0) seems good, but generation/level doesn't match, want gen: 24 level: 0
+Well block 30834688(gen: 21 level: 0) seems good, but generation/level doesn't match, want gen: 24 level: 0
+Well block 30769152(gen: 20 level: 0) seems good, but generation/level doesn't match, want gen: 24 level: 0
+Well block 30703616(gen: 19 level: 0) seems good, but generation/level doesn't match, want gen: 24 level: 0
+Well block 30638080(gen: 18 level: 0) seems good, but generation/level doesn't match, want gen: 24 level: 0
+Well block 30539776(gen: 17 level: 0) seems good, but generation/level doesn't match, want gen: 24 level: 0
+Well block 30408704(gen: 16 level: 0) seems good, but generation/level doesn't match, want gen: 24 level: 0
+
+sudo umount /media/s/6bc5e5c2-fea0-41a1-a12c-736bf5665866
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sudo btrfs subvolume snapshot /media/s/6bc5e5c2-fea0-41a1-a12c-736bf5665866 .snapshots/n1s
+
+
+sudo mount /media/s/6bc5e5c2-fea0-41a1-a12c-736bf5665866/.snapshots /mnt
+
+sudo btrfs subvolume list /media/s/6bc5e5c2-fea0-41a1-a12c-736bf5665866/
+ID 257 gen 21 top level 5 path .snapshots/n1s
+
+tree -a /media/s/6bc5e5c2-fea0-41a1-a12c-736bf5665866
+/media/s/6bc5e5c2-fea0-41a1-a12c-736bf5665866
+├── logind
+├── New folder
+│   └── малювання.jpg
+├── .snapshots
+│   └── n1s
+│       ├── logind
+│       ├── New folder
+│       │   └── малювання.jpg
+│       ├── .snapshots
+│       ├── systemd
+│       └── видео для изучения
+├── systemd
+└── видео для изучения
+
+5 directories, 8 files
+
+sudo btrfs filesystem df /media/s/6bc5e5c2-fea0-41a1-a12c-736bf5665866/
+Data, single: total=8.00MiB, used=108.00KiB
+System, DUP: total=8.00MiB, used=16.00KiB
+Metadata, DUP: total=256.00MiB, used=128.00KiB
+GlobalReserve, single: total=3.25MiB, used=0.00B
+
+
+
+
+
+
+btrfs-undelete
+
+btrfs-find-root /dev/sdb
+
+s@s-pc:/media/s/6bc5e5c2-fea0-41a1-a12c-736bf5665866$ sudo btrfs-find-root /dev/sdb
+Superblock thinks the generation is 14                                                                                                
+Superblock thinks the level is 0                                                                                                      
+Found tree root at 30720000 gen 14 level 0                                                                                            
+Well block 30654464(gen: 13 level: 0) seems good, but generation/level doesn't match, want gen: 14 level: 0                           
+Well block 30457856(gen: 12 level: 0) seems good, but generation/level doesn't match, want gen: 14 level: 0                           
+Well block 30588928(gen: 11 level: 0) seems good, but generation/level doesn't match, want gen: 14 level: 0 
+
+sudo btrfs restore -t 30720000   /dev/sdb /home/s
+
+
+
+
+https://superuser.com/questions/603708/btrfs-undelete-file
+
+
+
+
+sudo mount -t btrfs /dev/sdb  /home/s/test
+
+
+
+
+
+
+lsblk
+
+sdb      8:16   1   7,2G  0 disk 
+└─sdb1   8:17   1   7,2G  0 part /media/s/ESD-ISO
+
+
+sudo umount /media/s/ESD-ISO
+
+sudo umount /mnt
+sudo mount -t ext4 /dev/sdb  /mnt
+
+sudo mkfs.btrfs /dev/sdb
+sudo mkfs.btrfs -f   /dev/sdb
+
+sudo mount -t btrfs /dev/sdb  /mnt
+
+sudo fdisk /dev/sdb
+Command (m for help): p
+Disk /dev/sdb: 7,22 GiB, 7743995904 bytes, 15124992 sectors
+Disk model: Silicon-Power8G 
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x0abf4bb9
+
+Device     Boot Start      End  Sectors  Size Id Type
+/dev/sdb1  *     2048 15124991 15122944  7,2G  7 HPFS/NTFS/exFAT
+
+
+
+Command (m for help): d
+Selected partition 1
+Partition 1 has been deleted.
+
+
+
+Command (m for help): w 
+The partition table has been altered.
+Calling ioctl() to re-read partition table.
+Syncing disks.
+
+
+
+
+
+n новый раздел
+
+
+
+sudo mkfs.btrfs /dev/sdb
+
+mount /dev/sdb  /mnt
+
+
+
+
+
+
+
+d
+Перезагрузите таблицу разделов
+p
+
+
+
+
+
+
+
+
+
+https://linuxrussia.com/file-system-linux-btrfs.html
+
+btrfs filesystem df
+
+sudo btrfs filesystem df путь
+
+
+
+квоты
+
+btrfsck и btrfstune
+
+mkfs.btrfs /dev/sdc -L single_drive
+
+
+https://habr.com/ru/company/veeam/blog/458250/
+
+
+
+Для монтирования любого другого сабвольюма, кроме дефолтного, существуют два способа:
+указать путь от корневого сабвольюма btrfs:
+
+mount -o subvol=/path/to/subvol /dev/sdc /mnt
+
+
+либо указать ID сабвольюма:
+
+mount -o subvolid=257 /dev/sdc /mnt
+
+
+один из сабвольюмов btrfs указан как монтируемый по умолчанию. Узнать, какой именно, можно, выполнив:
+
+btrfs subvolume get-default /path/to/any/subvolume
+
+
+Установить сабвольюм, монтируемый по умолчанию, можно командой:
+
+btrfs subvolume set-default 258 /path/to/any/subvolume
+
+
+Создание и удаление сабвольюма производится на подмонтированной btrfs при помощи специальных команд:
+
+btrfs subvolume create /mnt/subvolume_name
+btrfs subvolume delete /mnt/subvolume_name
+
+
+
+После создания сабвольюма можно посмотреть его свойства:
+
+btrfs subvolume show /mnt/subvolume_name
+
+
+Команда btrfs subvolume list, вызванная с ключом -d, выведет список сабвольюмов, которые были удалены пользователем и на текущий момент находятся в процессе удаления с диска.
+
+cp -ax --reflink=always /original/file /copied/file
+
+
+Ключ reflink=always сообщает файловой системе, что мы хотим задействовать механизм CoW при копировании.
+
+
+на горячую» добавить блочные устройства непосредственно в процессе работы файловой системы:
+
+btrfs device add /path/to/device /path/to/btrfs
+
+
+
+Или удалить:
+
+btrfs device remove /path/to/device /path/to/btrfs
+
+
+
+указываемый путь — это путь до любого сабвольюма той btrfs, к которой будет применена команда
+ 
+ 
+ 
+btrfs balance start /path/to/btrfs
+
+
+Команда balance перераспределяет данные на дисках согласно выбранному профилю записи. 
+
