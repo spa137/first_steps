@@ -1,0 +1,19 @@
+
+
+sudo btrfs subvolume create ./path4
+
+
+sudo btrfs qgroup limit 10m ./path4
+
+
+cd path4
+
+sudo nano 1 privet
+
+sudo wget https://download.mikrotik.com/routeros/6.48.4/all_packages-smips-6.48.4.zip
+
+sudo wget https://download.mikrotik.com/routeros/6.49beta54/mikrotik-6.49beta54.iso
+
+
+
+
