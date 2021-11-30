@@ -1,0 +1,1 @@
+/queue simple add name=queue1 target=192.168.88.0/24 max-limit=2M/2M dst=ether1
