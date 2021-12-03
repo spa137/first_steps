@@ -1,1 +1,10 @@
 /queue simple add name=queue1 target=192.168.88.0/24 max-limit=2M/2M dst=ether1
+
+**********************************************************************  *******
+
+/queue simple add name=queue1 target=192.168.88.0/24 max-limit=9M/9M dst=ether1
+
+/queue simple add max-limit=8M/8M name=q1 parent=queue1 priority=1/1 target=192.168.88.101
+/queue simple add max-limit=900K/900K name=q2 parent=queue1 priority=1/1 target=192.168.88.102
+
+
