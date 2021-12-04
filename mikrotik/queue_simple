@@ -7,4 +7,22 @@
 /queue simple add max-limit=8M/8M name=q1 parent=queue1 priority=1/1 target=192.168.88.101
 /queue simple add max-limit=900K/900K name=q2 parent=queue1 priority=1/1 target=192.168.88.102
 
+**************************************************************************** **
+
+ 3    chain=prerouting action=mark-packet new-packet-mark=spa passthrough=yes protocol=tcp src-address=192.168.88.102 dst-port=443 
+      log=no log-prefix="" 
+
+ 4    chain=forward action=mark-packet new-packet-mark=spa passthrough=yes protocol=tcp dst-address=192.168.88.102 src-port=443 
+      log=no log-prefix=""
+
+
+ 0    name="queue1" target=192.168.88.102/32 dst=ether1 parent=none packet-marks="" priority=8/8 queue=default-small/default-small 
+      limit-at=0/0 max-limit=4M/4M burst-limit=0/0 burst-threshold=0/0 burst-time=0s/0s bucket-size=0.1/0.1 
+
+ 1    name="q1" target=192.168.88.102/32 parent=queue1 packet-marks=spa priority=1/1 queue=default-small/default-small limit-at=3M/3M 
+      max-limit=3M/3M burst-limit=0/0 burst-threshold=0/0 burst-time=0s/0s bucket-size=0.1/0.1 
+
+ 2    name="q2" target=192.168.88.102/32 parent=queue1 packet-marks=no-mark priority=8/8 queue=default-small/default-small 
+      limit-at=64k/64k max-limit=3M/3M burst-limit=0/0 burst-threshold=0/0 burst-time=0s/0s bucket-size=0.1/0.1 
+
 
