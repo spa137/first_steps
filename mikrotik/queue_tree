@@ -8,4 +8,31 @@
      burst-threshold=0 burst-time=0s bucket-size=0.1 
 
 1  name="up" parent=global packet-mark=spaup limit-at=100k queue=default-small priority=8 max-limit=100k burst-limit=0 
+     burst-threshold=0 burst-time=0s bucket-size=0.1
+ 
+**********************************************************************************************************************
+
+
+ 3   chain=prerouting action=mark-packet new-packet-mark=spaup passthrough=yes protocol=tcp src-address=192.168.88.0/24 dst-port=443 
+      log=no log-prefix="" 
+
+ 4   chain=forward action=mark-packet new-packet-mark=spadn101 passthrough=yes protocol=tcp dst-address=192.168.88.101 src-port=443 
+      log=no log-prefix="" 
+
+ 5   chain=forward action=mark-packet new-packet-mark=spadn102 passthrough=yes protocol=tcp dst-address=192.168.88.102 src-port=443 
+      log=no log-prefix="" 
+
+
+
+Flags: X - disabled, I - invalid 
+ 0  name="down" parent=global packet-mark=spadn101,spadn102 limit-at=2M queue=default-small priority=8 max-limit=2M burst-limit=0 
+     burst-threshold=0 burst-time=0s bucket-size=0.1 
+
+ 1  name="up" parent=global packet-mark=spaup limit-at=2M queue=default-small priority=8 max-limit=2M burst-limit=0 
+     burst-threshold=0 burst-time=0s bucket-size=0.1 
+
+ 2  name="102down" parent=down packet-mark=spadn102 limit-at=990k queue=default-small priority=8 max-limit=2M burst-limit=0 
+     burst-threshold=0 burst-time=0s bucket-size=0.1 
+
+ 3  name="101dn" parent=down packet-mark=spadn101 limit-at=1M queue=default-small priority=8 max-limit=2M burst-limit=0 
      burst-threshold=0 burst-time=0s bucket-size=0.1 
