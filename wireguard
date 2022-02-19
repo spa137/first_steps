@@ -1,0 +1,15 @@
+[Interface]
+PrivateKey = iB6rUygGAskudqEHvGduivFTm8C3aFQQgmbfI0mYqEk=
+Address = 192.168.2.2/24
+DNS = 1.1.1.1, 8.8.8.8
+
+[Peer]
+PublicKey = 5ajUnL/xFvdjbeYPm/RnY+Kfkj6Wcmdq7oTQH4mXXis=
+AllowedIPs = 0.0.0.0/0
+Endpoint = 192.168.88.3:13231
+PersistentKeepalive = 10
+
+
+
+
+/ip firewall filter  add action=accept chain=input dst-port=13231 protocol=udp src-address=192.168.88.104
